@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FILM OS — mappo_gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/reset.css?v=66">
+  <link rel="stylesheet" href="css/desktop.css?v=66">
+  <link rel="stylesheet" href="css/windows.css?v=66">
+  <link rel="stylesheet" href="css/pixel-ui.css?v=66">
+  <link rel="stylesheet" href="css/gallery.css?v=66">
+  <link rel="stylesheet" href="css/map.css?v=66">
+  <link rel="stylesheet" href="css/trip.css?v=66">
+  <link rel="stylesheet" href="css/mobile.css?v=66">
+  <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+  <div id="desktop">
+    <div id="windows-container"></div>
+    <div id="context-menu" class="context-menu hidden">
+      <div class="context-item" data-action="open-gallery">[ CONTACT SHEET ]</div>
+      <div class="context-item" data-action="open-map">[ ROUTE MAP ]</div>
+      <div class="context-item" data-action="open-trip">[ TRIP ]</div>
+      <div class="context-item separator"></div>
+      <div class="context-item" data-action="open-about">[ ABOUT ]</div>
+    </div>
+  </div>
+
+  <div id="taskbar">
+    <div id="taskbar-logo"><span class="lg-mark">▓</span><span class="lg-name">FILM<span class="lg-os">OS</span></span><span class="lg-tag">ROUTE 66</span></div>
+    <div id="taskbar-windows"></div>
+    <div id="taskbar-controls">
+      <button class="taskbar-btn" id="btn-trip">[ TRIP ]</button>
+      <button class="taskbar-btn" id="btn-map">[ MAP ]</button>
+      <button class="taskbar-btn theme-btn" id="btn-theme" title="Toggle light / dark">[D]</button>
+      <div id="taskbar-clock">00:00</div>
+    </div>
+  </div>
+
+  <!-- ── Window Templates ─────────────────────────────────────────── -->
+
+  <template id="tpl-gallery">
+    <div class="win" data-win="gallery">
+      <div class="win-titlebar">
+        <span class="win-title">▒ CONTACT SHEET</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-max" title="Maximize">□</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="gallery-grid"></div>
+      </div>
+      <div class="win-resize-handle"></div>
+    </div>
+  </template>
+
+  <template id="tpl-photo">
+    <div class="win win-photo" data-win="photo">
+      <div class="win-titlebar">
+        <span class="win-title win-photo-title">▒ FRAME</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-max" title="Maximize">□</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body photo-body">
+        <div class="photo-left">
+          <div class="photo-frame">
+            <img class="photo-img" src="" alt="">
+          </div>
+          <div class="photo-nav">
+            <button class="pixel-btn photo-prev">[ ◄ PREV ]</button>
+            <button class="pixel-btn photo-next">[ NEXT ► ]</button>
+          </div>
+        </div>
+        <div class="photo-meta">
+          <div class="meta-section">
+            <div class="meta-label">FILE</div>
+            <div class="meta-value meta-filename">—</div>
+          </div>
+          <div class="meta-section">
+            <div class="meta-label">DATE</div>
+            <div class="meta-value meta-date">—</div>
+          </div>
+          <div class="meta-section">
+            <div class="meta-label">CAMERA</div>
+            <div class="meta-value meta-camera">—</div>
+          </div>
+          <div class="meta-section meta-row">
+            <div>
+              <div class="meta-label">FOCAL</div>
+              <div class="meta-value meta-focal">—</div>
+            </div>
+            <div>
+              <div class="meta-label">f/</div>
+              <div class="meta-value meta-aperture">—</div>
+            </div>
+            <div>
+              <div class="meta-label">SS</div>
+              <div class="meta-value meta-shutter">—</div>
+            </div>
+            <div>
+              <div class="meta-label">ISO</div>
+              <div class="meta-value meta-iso">—</div>
+            </div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-section">
+            <div class="meta-label">LOCATION</div>
+            <input class="meta-input meta-location" type="text" placeholder="add location..." maxlength="80" spellcheck="false">
+          </div>
+          <div class="meta-section">
+            <div class="meta-label">MAP PIN</div>
+            <div class="meta-value meta-coords unset">not set</div>
+            <button class="pixel-btn meta-pin">[ PIN ON MAP ]</button>
+          </div>
+          <div class="meta-section">
+            <div class="meta-label">NOTES</div>
+            <textarea class="meta-input meta-caption" placeholder="add notes..." rows="4" maxlength="500" spellcheck="false"></textarea>
+          </div>
+          <div class="meta-actions">
+            <button class="pixel-btn meta-save">[ SAVE ]</button>
+            <button class="pixel-btn meta-delete">[ DELETE ]</button>
+          </div>
+        </div>
+      </div>
+      <div class="win-resize-handle"></div>
+    </div>
+  </template>
+
+  <template id="tpl-map">
+    <div class="win" data-win="map">
+      <div class="win-titlebar">
+        <span class="win-title">▒ ROUTE MAP</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-max" title="Maximize">□</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body map-body">
+        <div class="map-toolbar">
+          <button class="pixel-btn map-fit">[ FIT ]</button>
+          <button class="pixel-btn map-toggle-route">[ ROUTE 66 ]</button>
+          <button class="pixel-btn map-toggle-trip">[ TRIP LINE ]</button>
+          <span class="map-status">0 pinned</span>
+        </div>
+        <div style="position:relative; flex:1; min-height:0; display:flex;">
+          <div class="map-canvas" style="flex:1;"></div>
+          <div class="map-empty" hidden><span>NO PINNED PHOTOS — open a frame &amp; [ PIN ON MAP ]</span></div>
+        </div>
+      </div>
+      <div class="win-resize-handle"></div>
+    </div>
+  </template>
+
+  <template id="tpl-locpicker">
+    <div class="win win-locpicker" data-win="locpicker">
+      <div class="win-titlebar">
+        <span class="win-title">▒ SET LOCATION</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-max" title="Maximize">□</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body picker-body">
+        <div class="picker-search">
+          <input class="picker-search-input" type="text" placeholder="search a place (e.g. Amarillo TX)..." spellcheck="false">
+          <button class="pixel-btn picker-search-btn">[ GO ]</button>
+        </div>
+        <div class="picker-results"></div>
+        <div class="picker-canvas"></div>
+        <div class="picker-bar">
+          <span class="picker-coords">click map to drop pin</span>
+          <div class="picker-actions">
+            <button class="pixel-btn picker-clear">[ CLEAR ]</button>
+            <button class="pixel-btn picker-save">[ SAVE PIN ]</button>
+          </div>
+        </div>
+      </div>
+      <div class="win-resize-handle"></div>
+    </div>
+  </template>
+
+  <template id="tpl-trip">
+    <div class="win" data-win="trip">
+      <div class="win-titlebar">
+        <span class="win-title">▒ TRIP</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-max" title="Maximize">□</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body trip-body">
+        <div class="trip-head">
+          <div class="trip-head-top">
+            <span class="trip-status trip-status-planning">PLANNING</span>
+            <span class="trip-progress">0/0 stops</span>
+          </div>
+          <div class="trip-controls"></div>
+        </div>
+        <div class="trip-list"></div>
+      </div>
+      <div class="win-resize-handle"></div>
+    </div>
+  </template>
+
+  <template id="tpl-post">
+    <div class="win win-post" data-win="post">
+      <div class="win-titlebar">
+        <span class="win-title">▒ POST</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-max" title="Maximize">□</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body post-body">
+        <div class="post-card">
+          <div class="post-photo">
+            <img class="post-img" src="" alt="" hidden>
+            <div class="post-noimg">no image linked</div>
+          </div>
+          <span class="post-state st-planned">☆ PLANNED</span>
+          <div class="post-info">
+            <div class="post-loc">—</div>
+            <div class="post-date"></div>
+            <div class="post-thoughts"></div>
+          </div>
+          <div class="post-footer">▓ FILM OS · ROUTE 66</div>
+        </div>
+        <div class="post-toolbar">
+          <button class="pixel-btn post-edit">[ EDIT ]</button>
+          <button class="pixel-btn post-current">[ SET LIVE ]</button>
+          <button class="pixel-btn post-reached">[ MARK REACHED ]</button>
+        </div>
+        <div class="post-editor">
+          <label>DATE
+            <input class="post-edit-date" type="date">
+          </label>
+          <label>LINKED PHOTO
+            <div class="post-photo-row">
+              <select class="post-edit-photo"></select>
+              <button type="button" class="pixel-btn post-load" title="Load a photo from this device">[ + FILM ]</button>
+            </div>
+            <input class="post-load-input" type="file" accept="image/*" hidden>
+          </label>
+          <label>THOUGHTS
+            <textarea class="post-edit-thoughts" placeholder="what happened at this stop..." maxlength="600" spellcheck="false"></textarea>
+          </label>
+          <div class="post-editor-actions">
+            <button class="pixel-btn post-save">[ SAVE ]</button>
+            <button class="pixel-btn post-cancel">[ CANCEL ]</button>
+          </div>
+        </div>
+      </div>
+      <div class="win-resize-handle"></div>
+    </div>
+  </template>
+
+  <template id="tpl-about">
+    <div class="win win-about" data-win="about">
+      <div class="win-titlebar">
+        <span class="win-title">▒ ABOUT</span>
+        <div class="win-controls">
+          <button class="win-btn win-min" title="Minimize">_</button>
+          <button class="win-btn win-close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="win-body about-body">
+        <pre class="about-ascii">
+ ███╗   ███╗
+ ████╗ ████║
+ ██╔████╔██║
+ ██║╚██╔╝██║
+ ██║ ╚═╝ ██║
+ ╚═╝     ╚═╝</pre>
+        <p class="about-name">mappo_gallery</p>
+        <p class="about-bio">street. 35mm. grain.</p>
+        <div class="about-divider">────────────────────</div>
+        <p class="about-stat">FILM OS v1.0</p>
+        <p class="about-stat">© 2026</p>
+        <div class="about-divider">────────────────────</div>
+        <p class="about-hint">right-click desktop for menu</p>
+      </div>
+    </div>
+  </template>
+
+  <script src="js/storage.js?v=66"></script>
+  <script src="js/exif.js?v=66"></script>
+  <script src="js/route66.js?v=66"></script>
+  <script src="js/trip.js?v=66"></script>
+  <script src="js/window-manager.js?v=66"></script>
+  <script src="js/gallery.js?v=66"></script>
+  <script src="js/map.js?v=66"></script>
+  <script src="js/app.js?v=66"></script>
+</body>
+</html>

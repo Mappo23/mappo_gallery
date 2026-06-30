@@ -1,0 +1,124 @@
+/* ── Window base ──────────────────────────────────────────── */
+.win {
+  position: absolute;
+  min-width: 320px;
+  min-height: 220px;
+  background: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  box-shadow: 3px 3px 0 var(--border-lo), inset 1px 1px 0 rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.win-minimized  { display: none !important; }
+
+.win-maximized {
+  left: 0   !important;
+  top:  0   !important;
+  width:  100vw                              !important;
+  height: calc(100vh - var(--taskbar-h))    !important;
+}
+
+/* ── Title bar ────────────────────────────────────────────── */
+.win-titlebar {
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 8px;
+  gap: 4px;
+  background: var(--tb-inactive);
+  border-bottom: 2px solid var(--border-lo);
+  cursor: grab;
+  user-select: none;
+}
+
+.win-titlebar:active { cursor: grabbing; }
+
+.win-active .win-titlebar {
+  background: linear-gradient(90deg, var(--tb-active-from) 0%, var(--tb-active-to) 100%);
+}
+
+.win-title {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--text-muted);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.win-active .win-title { color: var(--text-on-active); }
+
+/* ── Window control buttons ───────────────────────────────── */
+.win-controls {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.win-btn {
+  width: 18px;
+  height: 18px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--s2);
+  color: var(--text-muted);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.win-btn:hover  { color: var(--accent); background: var(--s3); }
+.win-btn:active { border-color: var(--border-lo) var(--border-hi) var(--border-hi) var(--border-lo); }
+
+/* ── Window body ──────────────────────────────────────────── */
+.win-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0;
+}
+
+/* Scrollbars */
+.win-body::-webkit-scrollbar        { width: 8px; height: 8px; }
+.win-body::-webkit-scrollbar-track  { background: var(--bg); }
+.win-body::-webkit-scrollbar-thumb  { background: var(--s2); border: 1px solid var(--bg); }
+.win-body::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+/* ── Resize handle ────────────────────────────────────────── */
+.win-resize-handle {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 16px; height: 16px;
+  cursor: se-resize;
+}
+
+.win-resize-handle::before,
+.win-resize-handle::after {
+  content: '';
+  position: absolute;
+  background: var(--border-hi);
+}
+
+.win-resize-handle::before {
+  bottom: 3px; right: 7px;
+  width: 5px; height: 2px;
+  box-shadow: 0 -4px 0 var(--border-hi), 0 -8px 0 var(--border-hi);
+}
+
+.win-resize-handle::after {
+  bottom: 7px; right: 3px;
+  width: 2px; height: 5px;
+  box-shadow: -4px 0 0 var(--border-hi), -8px 0 0 var(--border-hi);
+}

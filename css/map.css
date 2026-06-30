@@ -1,0 +1,299 @@
+/* ══════════════════════════════════════════════════════════
+   ROUTE MAP  +  LOCATION PICKER
+══════════════════════════════════════════════════════════ */
+
+.win[data-win="map"]       { min-width: 420px; }
+.win[data-win="locpicker"] { min-width: 360px; }
+
+.win[data-win="map"] .win-body,
+.win[data-win="locpicker"] .win-body { overflow: hidden; }
+
+.map-body,
+.picker-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Keep titlebar/resize above Leaflet's internal z-indices */
+.win[data-win="map"] .win-titlebar,
+.win[data-win="locpicker"] .win-titlebar { position: relative; z-index: 1100; }
+.win[data-win="map"] .win-resize-handle,
+.win[data-win="locpicker"] .win-resize-handle { z-index: 1200; }
+
+/* ── Map canvases ─────────────────────────────────────────── */
+.map-canvas,
+.picker-canvas {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* ── Map toolbar ──────────────────────────────────────────── */
+.map-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  background: var(--s1);
+  border-bottom: 2px solid var(--border-lo);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.map-toolbar .pixel-btn.toggled-off {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.map-status {
+  font-family: var(--font-vt);
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-left: auto;
+  padding-right: 4px;
+  white-space: nowrap;
+}
+
+/* Empty hint overlay (no pinned photos) */
+.map-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 500;
+}
+.map-empty span {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--accent);
+  background: rgba(0,0,0,0.78);
+  border: 2px solid var(--border-hi);
+  padding: 10px 14px;
+  letter-spacing: 0.06em;
+}
+body[data-theme="light"] .map-empty span { background: rgba(255,255,255,0.85); }
+
+/* ── Picker search + bar ──────────────────────────────────── */
+.picker-search {
+  display: flex;
+  gap: 5px;
+  padding: 8px;
+  background: var(--s1);
+  border-bottom: 2px solid var(--border-lo);
+  flex-shrink: 0;
+}
+.picker-search-input {
+  flex: 1;
+  font-family: var(--font-vt);
+  font-size: 17px;
+  background: var(--bg);
+  color: var(--text);
+  border: 2px solid var(--divider);
+  padding: 2px 6px;
+  outline: none;
+}
+.picker-search-input:focus { border-color: var(--accent-dim); }
+.picker-search-input::placeholder { color: var(--placeholder); }
+
+.picker-results {
+  background: var(--win-bg);
+  max-height: 0;
+  overflow-y: auto;
+  transition: max-height 0.15s;
+  flex-shrink: 0;
+}
+.picker-results.show { max-height: 130px; border-bottom: 2px solid var(--border-lo); }
+
+.picker-result {
+  font-family: var(--font-vt);
+  font-size: 16px;
+  color: var(--text);
+  padding: 5px 9px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--divider);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.picker-result:hover { background: var(--accent); color: var(--text-on-accent); }
+.picker-result.muted { color: var(--text-muted); cursor: default; }
+.picker-result.muted:hover { background: var(--win-bg); color: var(--text-muted); }
+
+.picker-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  background: var(--s1);
+  border-top: 2px solid var(--border-lo);
+  flex-shrink: 0;
+}
+.picker-coords {
+  font-family: var(--font-vt);
+  font-size: 16px;
+  color: var(--text-muted);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.picker-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+/* ── Photo Detail: map pin section ────────────────────────── */
+.meta-coords {
+  font-family: var(--font-vt);
+  font-size: 17px;
+  color: var(--text);
+}
+.meta-coords.unset { color: var(--placeholder); }
+.meta-pin { margin-top: 2px; align-self: flex-start; }
+
+/* ══════════════════════════════════════════════════════════
+   LEAFLET THEME OVERRIDES
+══════════════════════════════════════════════════════════ */
+
+.leaflet-container {
+  background: var(--bg) !important;
+  font-family: var(--font-vt), monospace;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Zoom controls → pixel buttons */
+.leaflet-bar {
+  border: 2px solid var(--border-lo) !important;
+  border-radius: 0 !important;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.6) !important;
+}
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: var(--s2) !important;
+  color: var(--accent) !important;
+  border-bottom: 2px solid var(--border-lo) !important;
+  border-radius: 0 !important;
+  width: 26px; height: 26px; line-height: 24px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+.leaflet-bar a:hover { background: var(--s3) !important; }
+.leaflet-bar a:last-child { border-bottom: none !important; }
+.leaflet-bar a.leaflet-disabled { opacity: 0.4; }
+
+/* Attribution */
+.leaflet-control-attribution {
+  background: rgba(0,0,0,0.55) !important;
+  color: var(--text-muted) !important;
+  font-family: var(--font-mono);
+  font-size: 9px !important;
+  border-radius: 0 !important;
+  padding: 1px 5px !important;
+}
+body[data-theme="light"] .leaflet-control-attribution {
+  background: rgba(255,255,255,0.7) !important;
+}
+.leaflet-control-attribution a { color: var(--accent) !important; }
+
+/* Tooltips (photo hover previews) */
+.leaflet-tooltip.map-tooltip {
+  background: var(--win-bg);
+  border: 2px solid var(--border-hi);
+  border-radius: 0;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.6);
+  padding: 0;
+  color: var(--text);
+}
+.leaflet-tooltip.map-tooltip::before { display: none; }  /* hide arrow */
+
+.map-tip { padding: 0; width: 120px; }
+.map-tip img {
+  width: 120px; height: 80px; object-fit: cover; display: block;
+  filter: var(--thumb-filter);
+}
+.map-tip .map-tip-cap {
+  font-family: var(--font-vt);
+  font-size: 14px;
+  color: var(--text);
+  padding: 2px 5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Landmark popups */
+.leaflet-popup-content-wrapper {
+  background: var(--win-bg);
+  color: var(--text);
+  border: 2px solid var(--border-hi);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+}
+.leaflet-popup-tip { background: var(--win-bg); border: 2px solid var(--border-hi); }
+.leaflet-popup-content { margin: 8px 10px; font-family: var(--font-vt); }
+.leaflet-popup-content .pop-name {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 4px;
+}
+.leaflet-popup-content .pop-city { font-size: 16px; color: var(--text); display: block; }
+.leaflet-popup-content .pop-note { font-size: 15px; color: var(--text-muted); display: block; }
+.leaflet-container a.leaflet-popup-close-button { color: var(--text-muted); }
+
+/* ── Custom pixel markers (divIcon) ───────────────────────── */
+.pin-photo {
+  display: flex; align-items: center; justify-content: center;
+}
+.pin-photo .pin-dot {
+  width: 12px; height: 12px;
+  background: var(--accent);
+  border: 2px solid #000;
+  box-shadow: 0 0 0 1px var(--accent);
+  transform: rotate(45deg);
+}
+.pin-photo.pin-photo-active .pin-dot {
+  background: #fff;
+  box-shadow: 0 0 6px 2px var(--accent);
+}
+
+.pin-landmark {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; line-height: 1;
+  color: var(--sun);
+  text-shadow: 0 0 2px #000, 1px 1px 0 #000;
+}
+
+/* Trip itinerary stars: hollow ☆ planned → gold ★ reached */
+.pin-trip {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; line-height: 1;
+  text-shadow: 0 0 2px #000, 1px 1px 0 #000;
+}
+.pin-trip-off { color: rgba(232, 220, 200, 0.55); }
+.pin-trip-on  { color: var(--sun); }
+body[data-theme="light"] .pin-trip-off { color: rgba(40, 40, 40, 0.5); text-shadow: 0 0 2px #fff; }
+
+/* Pulsing live marker at the current stop */
+.pin-live { position: relative; pointer-events: none; }
+.pin-live .live-dot,
+.pin-live .live-pulse {
+  position: absolute; left: 50%; top: 50%;
+  width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.pin-live .live-dot { border: 2px solid #000; box-shadow: 0 0 4px 1px var(--accent); }
+.pin-live .live-pulse { opacity: 0.55; animation: livePulse 1.6s ease-out infinite; }
+
+@keyframes livePulse {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  100% { transform: scale(4.2); opacity: 0;    }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pin-live .live-pulse { animation: none; opacity: 0.3; }
+}

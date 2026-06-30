@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "film-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["serve.py"],
+      "autoPort": true,
+      "port": 5544
+    }
+  ]
+}

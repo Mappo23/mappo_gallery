@@ -1,0 +1,306 @@
+/* ══════════════════════════════════════════════════════════
+   CONTACT SHEET  (gallery window)
+══════════════════════════════════════════════════════════ */
+
+.win[data-win="gallery"] .win-body { overflow: auto; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 2px;
+  padding: 8px;
+  background: var(--bg);
+  min-height: 100%;
+}
+
+/* ── Empty state ────────────────────────────────────────── */
+.gallery-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 16px;
+  text-align: center;
+}
+
+.gallery-empty-icon {
+  font-size: 32px;
+  color: var(--s3);
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+}
+
+.gallery-empty p {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.gallery-empty-sub {
+  font-family: var(--font-vt) !important;
+  font-size: 18px !important;
+  color: var(--placeholder) !important;
+}
+
+/* ── Photo cell ─────────────────────────────────────────── */
+.gallery-cell {
+  position: relative;
+  cursor: pointer;
+  background: #000;
+  border: 1px solid var(--divider);
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-cell:hover { border-color: var(--accent-dim); }
+
+.gallery-frame-num {
+  font-family: var(--font-vt);
+  font-size: 13px;
+  color: var(--placeholder);
+  padding: 2px 5px 1px;
+  background: var(--bg);
+  line-height: 1;
+}
+
+.gallery-thumb-wrap {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #000;
+}
+
+.gallery-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: var(--thumb-filter);
+  transition: filter 0.18s;
+}
+
+.gallery-cell:hover .gallery-thumb {
+  filter: contrast(1.1) saturate(0.5) brightness(0.55);
+}
+
+.gallery-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s;
+  letter-spacing: 0.1em;
+}
+
+.gallery-cell:hover .gallery-thumb-overlay { opacity: 1; }
+
+.gallery-cell-meta {
+  padding: 3px 5px 4px;
+  background: var(--bg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.gallery-cell-date {
+  font-family: var(--font-vt);
+  font-size: 14px;
+  color: var(--text-muted);
+  display: block;
+  line-height: 1.1;
+}
+
+.gallery-cell-loc {
+  font-family: var(--font-vt);
+  font-size: 12px;
+  color: var(--placeholder);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PHOTO DETAIL  (photo window)
+══════════════════════════════════════════════════════════ */
+
+.win[data-win="photo"] .win-body {
+  overflow: hidden;
+  display: flex;
+}
+
+.photo-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.photo-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000;          /* always black — best for viewing photos */
+}
+
+/* Film frame */
+.photo-frame {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.photo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.photo-nav {
+  display: flex;
+  gap: 4px;
+  padding: 6px 8px;
+  background: var(--s1);
+  border-top: 2px solid var(--divider);
+  flex-shrink: 0;
+}
+
+/* ── Metadata panel ─────────────────────────────────────── */
+.photo-meta {
+  width: 260px;
+  flex-shrink: 0;
+  border-left: 2px solid var(--divider);
+  padding: 12px 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  background: var(--win-bg);
+}
+
+.meta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-section.meta-row {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.meta-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.meta-label {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta-value {
+  font-family: var(--font-vt);
+  font-size: 19px;
+  color: var(--text);
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.meta-divider {
+  height: 2px;
+  background: var(--divider);
+  flex-shrink: 0;
+}
+
+.meta-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.meta-delete       { color: #9a3322 !important; }
+.meta-delete:hover { color: #c2452e !important; background: var(--bg) !important; }
+
+/* ══════════════════════════════════════════════════════════
+   ABOUT WINDOW
+══════════════════════════════════════════════════════════ */
+
+.win-about { min-width: 280px; }
+
+.about-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  user-select: text;
+  overflow: auto;
+}
+
+.about-ascii {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--accent-dim);
+  line-height: 1.25;
+  text-align: center;
+}
+
+.about-name {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.about-bio {
+  font-family: var(--font-vt);
+  font-size: 22px;
+  color: var(--text);
+  letter-spacing: 0.15em;
+}
+
+.about-divider {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--divider);
+  letter-spacing: 0.05em;
+}
+
+.about-stat {
+  font-family: var(--font-vt);
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+.about-hint {
+  font-family: var(--font-vt);
+  font-size: 14px;
+  color: var(--placeholder);
+  margin-top: 4px;
+  font-style: italic;
+}

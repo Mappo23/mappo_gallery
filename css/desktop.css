@@ -1,0 +1,263 @@
+/* ══════════════════════════════════════════════════════════
+   DESIGN TOKENS — Dark (Sun-faded 66 · dusk desert, default)
+══════════════════════════════════════════════════════════ */
+:root {
+  /* Palette — roasted desert brown */
+  --bg:             #241a16;      /* desktop background */
+  --win-bg:         #2e211b;      /* window body */
+  --s1:             #35261e;      /* taskbar, secondary panels */
+  --s2:             #3f2d23;      /* buttons, inputs */
+  --s3:             #4d3729;      /* hover states */
+  --divider:        #1d140f;      /* dividers / thin borders */
+  --placeholder:    #5a4233;      /* placeholder text */
+
+  /* Title bars — ember rust */
+  --tb-active-from: #7a3b22;
+  --tb-active-to:   #3a1d12;
+  --tb-inactive:    #2a1e17;
+
+  /* Borders — light edge / dark edge for 3-D pixel effect */
+  --border-hi:      #574036;
+  --border-lo:      #120b07;
+
+  /* Typography */
+  --accent:         #e87a3e;      /* ember orange */
+  --accent-dim:     #b0521f;
+  --accent2:        #5fa89a;      /* faded teal — secondary accent */
+  --accent2-dim:    #3f7a6e;
+  --sun:            #e0a83e;      /* mustard / desert gold */
+  --text:           #f0e0c8;      /* warm cream */
+  --text-muted:     #a98a6a;      /* faded tan */
+  --text-on-active: #f5d9b8;    /* text ON the active title bar */
+  --text-on-accent: #2a1206;    /* dark brown on ember hover bg */
+
+  /* Effects */
+  --scanline:       rgba(60, 30, 0, 0.07);
+  --vignette:       rgba(20, 10, 0, 0.45);
+  --thumb-filter:   contrast(1.05) saturate(0.82) sepia(0.12);
+
+  /* Fonts */
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-vt:    'VT323', monospace;
+  --font-mono:  'Courier Prime', Courier, monospace;
+
+  --taskbar-h: 38px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   DESIGN TOKENS — Light (Sun-faded 66 · aged poster / sand)
+══════════════════════════════════════════════════════════ */
+body[data-theme="light"] {
+  --bg:             #e6dac2;      /* sun-bleached sand */
+  --win-bg:         #f0e7d2;      /* aged paper */
+  --s1:             #ddd0b4;
+  --s2:             #d2c4a4;
+  --s3:             #c8b896;
+  --divider:        #c2b393;
+  --placeholder:    #a89878;
+
+  --tb-active-from: #b5432e;      /* dusty red */
+  --tb-active-to:   #7a2a1a;
+  --tb-inactive:    #cdbf9f;
+
+  --border-hi:      #fffaf0;
+  --border-lo:      #8a7a5a;
+
+  --accent:         #b5432e;      /* dusty red */
+  --accent-dim:     #8f3422;
+  --accent2:        #4f8f86;      /* faded teal */
+  --accent2-dim:    #3a6e66;
+  --sun:            #c8902f;      /* mustard / desert gold */
+  --text:           #2a1f18;      /* dark espresso */
+  --text-muted:     #7a6249;
+  --text-on-active: #f5ead2;
+  --text-on-accent: #f5ead2;
+
+  --scanline:       rgba(80, 50, 0, 0.025);
+  --vignette:       rgba(60, 30, 0, 0.12);
+  --thumb-filter:   contrast(1.02) saturate(0.9) sepia(0.14);
+}
+
+/* ── Body ─────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  user-select: none;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* ── Desktop ─────────────────────────────────────────────── */
+#desktop {
+  position: fixed;
+  inset: 0 0 var(--taskbar-h) 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      var(--scanline) 3px,
+      var(--scanline) 4px
+    ),
+    var(--bg);
+}
+
+/* Vignette */
+#desktop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, var(--vignette) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#windows-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* ── Taskbar ─────────────────────────────────────────────── */
+#taskbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--taskbar-h);
+  background: var(--s1);
+  border-top: 2px solid var(--border-hi);
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 6px;
+  z-index: 10000;
+}
+
+#taskbar-logo {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  white-space: nowrap;
+  padding: 0 10px 0 6px;
+  border-right: 2px solid var(--divider);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+#taskbar-logo .lg-mark { color: var(--accent); }
+#taskbar-logo .lg-name { color: var(--text); letter-spacing: 0.12em; }
+#taskbar-logo .lg-os   { color: var(--accent); }
+#taskbar-logo .lg-tag  {
+  color: var(--text-muted);
+  font-size: 6px;
+  letter-spacing: 0.18em;
+  border-left: 2px solid var(--divider);
+  padding-left: 6px;
+}
+
+#taskbar-windows {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  overflow: hidden;
+  align-items: center;
+  min-width: 0;
+}
+
+#taskbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  border-left: 2px solid var(--divider);
+  padding-left: 8px;
+}
+
+#taskbar-clock {
+  font-family: var(--font-vt);
+  font-size: 20px;
+  color: var(--text);
+  min-width: 46px;
+  text-align: center;
+  padding: 0 4px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Taskbar buttons ─────────────────────────────────────── */
+.taskbar-btn {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  background: var(--s2);
+  color: var(--accent);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  padding: 0 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.taskbar-btn:hover   { background: var(--s3); color: var(--text); }
+.taskbar-btn:active  { border-color: var(--border-lo) var(--border-hi) var(--border-hi) var(--border-lo); }
+
+/* Compact theme toggle — single-glyph button */
+.theme-btn { min-width: 30px; justify-content: center; padding: 0 6px; }
+
+.taskbar-win-btn {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  background: var(--s1);
+  color: var(--text-muted);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  padding: 0 8px;
+  cursor: pointer;
+  height: 24px;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.taskbar-win-btn:hover     { color: var(--text); background: var(--s2); }
+.taskbar-win-btn.active    { color: var(--accent); background: var(--s2); }
+.taskbar-win-btn.minimized { color: var(--divider); background: var(--s1); }
+
+/* ── Context menu ────────────────────────────────────────── */
+#context-menu {
+  position: fixed;
+  background: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  z-index: 20000;
+  min-width: 180px;
+  box-shadow: 3px 3px 0 var(--border-lo);
+}
+
+#context-menu.hidden { display: none; }
+
+.context-item {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.context-item:hover  { background: var(--accent); color: var(--text-on-accent); }
+
+.context-item.separator {
+  height: 2px;
+  background: var(--divider);
+  padding: 0;
+  margin: 2px 0;
+  cursor: default;
+}
+.context-item.separator:hover { background: var(--divider); }

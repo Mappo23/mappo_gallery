@@ -1,0 +1,282 @@
+/* ══════════════════════════════════════════════════════════
+   TRIP WINDOW  (itinerary + live control)
+══════════════════════════════════════════════════════════ */
+
+.win[data-win="trip"] { min-width: 300px; }
+.win[data-win="trip"] .win-body { overflow: hidden; }
+
+.trip-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.trip-head {
+  padding: 10px 12px;
+  background: var(--s1);
+  border-bottom: 2px solid var(--border-lo);
+  flex-shrink: 0;
+}
+
+.trip-head-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.trip-status {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+.trip-status-planning { color: var(--text-muted); }
+.trip-status-live     { color: #e0512e; animation: liveBlink 1.4s steps(2, start) infinite; }
+.trip-status-done     { color: var(--accent); }
+
+@keyframes liveBlink { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .trip-status-live { animation: none; } }
+
+.trip-progress {
+  font-family: var(--font-vt);
+  font-size: 17px;
+  color: var(--text-muted);
+}
+
+.trip-controls { display: flex; gap: 6px; flex-wrap: wrap; }
+.trip-start    { color: var(--accent2) !important; }
+
+.trip-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--bg);
+}
+
+.trip-empty {
+  padding: 30px 16px;
+  text-align: center;
+  font-family: var(--font-vt);
+  font-size: 17px;
+  color: var(--text-muted);
+}
+
+.trip-stop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 2px solid var(--divider);
+  margin-bottom: 4px;
+  cursor: pointer;
+  background: var(--win-bg);
+}
+.trip-stop:hover { border-color: var(--accent-dim); }
+.trip-stop.is-current { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.trip-stop.is-reached .trip-stop-name { color: var(--text); }
+
+.trip-stop-glyph {
+  font-size: 16px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+.trip-stop.is-reached .trip-stop-glyph { color: var(--sun); }
+.trip-stop.is-current .trip-stop-glyph { color: var(--accent); }
+
+.trip-stop-idx {
+  font-family: var(--font-vt);
+  font-size: 15px;
+  color: var(--placeholder);
+  flex-shrink: 0;
+}
+
+.trip-stop-body { flex: 1; min-width: 0; }
+.trip-stop-name {
+  font-family: var(--font-vt);
+  font-size: 18px;
+  color: var(--text);
+  line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.trip-stop-sub {
+  font-family: var(--font-vt);
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.trip-stop-post { flex-shrink: 0; font-size: 6px !important; padding: 6px 7px !important; }
+
+/* ══════════════════════════════════════════════════════════
+   POST CARD  (shareable stop view)
+══════════════════════════════════════════════════════════ */
+
+.win[data-win="post"] { min-width: 300px; }
+.win[data-win="post"] .win-body { overflow-y: auto; }
+
+.post-body {
+  display: flex;
+  flex-direction: column;
+  /* NB: this element is also .win-body (flex:1, min-height:0, overflow:auto).
+     Do NOT set min-height:100% here — it resolves against the full window
+     height (titlebar included), overflowing the frame and clipping the
+     sticky SAVE/CANCEL footer. flex:1 already fills the available space. */
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* The shareable card */
+.post-card {
+  margin: 12px;
+  background: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  box-shadow: 3px 3px 0 var(--border-lo);
+  display: flex;
+  flex-direction: column;
+}
+
+.post-photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 2px solid var(--border-lo);
+}
+.post-img { width: 100%; height: 100%; object-fit: cover; filter: var(--thumb-filter); }
+.post-noimg {
+  font-family: var(--font-vt);
+  font-size: 17px;
+  color: var(--placeholder);
+}
+
+.post-state {
+  align-self: flex-start;
+  margin: 8px 0 0 10px;
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  letter-spacing: 0.06em;
+  padding: 4px 6px;
+  border: 1px solid currentColor;
+}
+.st-reached { color: var(--sun); }
+.st-live    { color: var(--accent); }
+.st-planned { color: var(--text-muted); }
+
+.post-info { padding: 8px 12px 12px; }
+.post-loc {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.post-date {
+  font-family: var(--font-vt);
+  font-size: 17px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.post-thoughts {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Boarding-pass-style credit stamp */
+.post-footer {
+  margin-top: auto;
+  padding: 8px 12px;
+  border-top: 2px dashed var(--border-lo);
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.post-footer .pf-brand { color: var(--accent); letter-spacing: 0.06em; }
+.post-footer .pf-route {
+  color: var(--text-muted);
+  letter-spacing: 0.22em;
+}
+.post-footer .pf-stop {
+  margin-left: auto;
+  color: var(--text);
+  letter-spacing: 0.1em;
+  border: 2px solid var(--divider);
+  padding: 3px 5px;
+  background: var(--bg);
+}
+
+/* Toolbar + editor */
+.post-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 12px;
+  flex-wrap: wrap;
+}
+
+.post-editor {
+  padding: 12px 12px 0;
+  border-top: 2px solid var(--border-lo);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--s1);
+}
+.win[data-win="post"]:not(.editing) .post-editor { display: none; }
+.win[data-win="post"].editing .post-toolbar .post-edit { color: var(--accent) !important; }
+
+.post-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+.post-editor input,
+.post-editor select,
+.post-editor textarea {
+  font-family: var(--font-vt);
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--text);
+  border: 2px solid var(--divider);
+  padding: 3px 6px;
+  outline: none;
+}
+.post-editor input:focus,
+.post-editor select:focus,
+.post-editor textarea:focus { border-color: var(--accent-dim); }
+.post-editor textarea { min-height: 90px; resize: vertical; line-height: 1.4; }
+
+/* LINKED PHOTO row: select + inline film loader */
+.post-photo-row { display: flex; gap: 6px; align-items: stretch; }
+.post-photo-row .post-edit-photo { flex: 1; min-width: 0; }
+.post-load { flex-shrink: 0; font-size: 6px !important; white-space: nowrap; }
+
+/* Pin SAVE / CANCEL as a sticky footer so they're always fully visible,
+   regardless of window height or how far the editor has scrolled. */
+.post-editor-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  margin: 0 -12px;
+  /* clear of the window edge + iOS home indicator */
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--s1);
+  border-top: 2px solid var(--border-lo);
+}

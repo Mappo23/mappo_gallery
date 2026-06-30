@@ -1,0 +1,67 @@
+/* ══════════════════════════════════════════════════════════
+   MOBILE  (≤ 680px) — windows become full-screen app views
+══════════════════════════════════════════════════════════ */
+
+@media (max-width: 680px) {
+  :root { --taskbar-h: 46px; }
+
+  /* Every window fills the screen and stacks by z-index (top one visible) */
+  .win {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - var(--taskbar-h)) !important;
+    box-shadow: none;
+    border-width: 0 0 2px 0;
+  }
+  .win-maximized { width: 100vw !important; height: calc(100vh - var(--taskbar-h)) !important; }
+
+  /* Dragging / resizing / maximize don't apply on a phone */
+  .win-titlebar { cursor: default; }
+  .win-resize-handle { display: none; }
+  .win-max { display: none; }
+  .win-title { font-size: 9px; }
+  .win-btn { width: 26px; height: 26px; font-size: 16px; }
+
+  /* Taskbar: horizontally scrollable strip of bigger touch targets */
+  #taskbar { overflow-x: auto; overflow-y: hidden; gap: 4px; padding: 0 4px; }
+  #taskbar::-webkit-scrollbar { display: none; }
+  #taskbar-logo { display: none; }
+  #taskbar-windows { flex: 0 0 auto; }
+  #taskbar-controls { border-left: none; padding-left: 4px; }
+  .taskbar-btn, .taskbar-win-btn { font-size: 8px; height: 32px; padding: 0 9px; }
+  #taskbar-clock { font-size: 17px; min-width: 40px; }
+
+  /* Bigger tap targets for pixel buttons */
+  .pixel-btn { padding: 9px 11px; }
+
+  /* Photo detail stacks: image on top, meta below */
+  .photo-body { flex-direction: column; }
+  .photo-left { flex: 1 1 55%; min-height: 0; }
+  .photo-meta {
+    width: 100%;
+    flex: 0 0 45%;
+    border-left: none;
+    border-top: 2px solid var(--divider);
+  }
+
+  /* Contact sheet: two columns */
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Map toolbar wraps; controls easier to hit */
+  .map-toolbar { gap: 4px; }
+  .leaflet-bar a, .leaflet-bar a:hover { width: 32px; height: 32px; line-height: 30px; }
+
+  /* Post card uses the full width for a clean screenshot */
+  .post-card { margin: 0; border-width: 0; box-shadow: none; }
+  .post-photo { aspect-ratio: 1 / 1; }
+  .post-loc { font-size: 12px; }
+  .post-thoughts { font-size: 14px; }
+}
+
+/* Very small / portrait phones */
+@media (max-width: 380px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  .meta-row { flex-wrap: wrap; }
+  .meta-row > div { flex: 1 0 40%; }
+}
