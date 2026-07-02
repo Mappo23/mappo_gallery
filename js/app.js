@@ -10,6 +10,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   // so owner-only controls and existing photos/trip are ready on first paint.
   await Storage.hydrate();
 
+  Landing.init();   // stats/status need trip data, which is now hydrated
+
   // ── Theme toggle (compact glyph: [D] dark / [L] light) ────
   const themeBtn = document.getElementById('btn-theme');
   let currentTheme = Storage.getTheme();

@@ -83,7 +83,7 @@ const RouteMap = {
   photoLayer:     null,
   liveLayer:      null,
   resizeObs:      null,
-  showRoute66:    true,
+  showRoute66:    false,  // faint historic '26 alignment — off by default
   showTripLine:   true,
 
   open() {
@@ -118,6 +118,7 @@ const RouteMap = {
 
     // Toolbar
     winEl.querySelector('.map-fit').addEventListener('click', () => this._fit());
+    winEl.querySelector('.map-toggle-route').classList.toggle('toggled-off', !this.showRoute66);
     winEl.querySelector('.map-toggle-route').addEventListener('click', e => {
       this.showRoute66 = !this.showRoute66;
       e.currentTarget.classList.toggle('toggled-off', !this.showRoute66);
@@ -137,11 +138,14 @@ const RouteMap = {
     this.routeLayer.clearLayers();
     if (!this.showRoute66) return;
 
+    // Faint historic 1926 alignment — a quiet backdrop, not competing with
+    // our own route (drawn bold in tripPlanLayer/tripDoneLayer).
+    const faded = getComputedStyle(document.body).getPropertyValue('--text-muted').trim() || '#a98a6a';
     L.polyline(ROUTE_66.path, {
-      color: '#c8432e',
-      weight: 3,
-      opacity: 0.85,
-      dashArray: '1,0',
+      color: faded,
+      weight: 1.5,
+      opacity: 0.4,
+      dashArray: '1,5',
     }).addTo(this.routeLayer);
 
     ROUTE_66.landmarks.forEach(lm => {
@@ -278,7 +282,8 @@ const RouteMap = {
     this.map.removeLayer(this.tileLayer);
     this.tileLayer = MapUtil.makeTiles(theme).addTo(this.map);
     this.tileLayer.bringToBack();
-    this.refresh();   // trip line colour follows the theme accent
+    this._drawRoute66();   // faded line colour follows the theme too
+    this.refresh();        // trip line colour follows the theme accent
   },
 };
 

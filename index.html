@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/trip.css?v=66">
   <link rel="stylesheet" href="css/mobile.css?v=66">
   <link rel="stylesheet" href="css/auth.css?v=66">
+  <link rel="stylesheet" href="css/landing.css?v=66">
   <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -37,6 +38,28 @@
     </defs>
   </svg>
 
+  <!-- Landing splash — the site's front door. Shown first; [ ENTER ] reveals
+       the desktop OS underneath, which has already booted behind it. -->
+  <div id="landing">
+    <div class="landing-content">
+      <svg class="landing-shield r66" aria-hidden="true"><use href="#r66-shield"/></svg>
+      <h1 class="landing-tagline">THE MOTHER ROAD<br>CENTENNIAL RUN</h1>
+      <p class="landing-status" id="landing-status">CHICAGO → SANTA MONICA · JUL 2026</p>
+      <p class="landing-desc">
+        A photo diary of our drive down Route 66 in its 100th year — real film,
+        real stops, real detours — up to the Grand Canyon and Monument Valley,
+        then home along the California coast through Big Sur.
+      </p>
+      <div class="landing-stats">
+        <div class="landing-stat"><span class="landing-stat-num" id="landing-stat-stops">–</span><span class="landing-stat-label">stops</span></div>
+        <div class="landing-stat"><span class="landing-stat-num" id="landing-stat-days">–</span><span class="landing-stat-label">days</span></div>
+        <div class="landing-stat"><span class="landing-stat-num">1926</span><span class="landing-stat-label">est.</span></div>
+      </div>
+      <button class="pixel-btn landing-enter" id="landing-enter" autofocus>[ ENTER FILM OS ]</button>
+      <p class="landing-hint">right-click the desktop for a menu</p>
+    </div>
+  </div>
+
   <div id="desktop">
     <svg id="desktop-emblem" class="r66" aria-hidden="true"><use href="#r66-shield"/></svg>
     <div id="windows-container"></div>
@@ -50,7 +73,7 @@
   </div>
 
   <div id="taskbar">
-    <div id="taskbar-logo"><svg class="lg-mark r66-mini" aria-hidden="true"><use href="#r66-shield"/></svg><span class="lg-name">FILM<span class="lg-os">OS</span></span><span class="lg-tag">ROUTE 66</span></div>
+    <div id="taskbar-logo"><svg class="lg-mark r66-mini" aria-hidden="true"><use href="#r66-shield"/></svg><span class="lg-name">FILM<span class="lg-os">OS</span></span><span class="lg-tag">MOTHER ROAD '26</span></div>
     <div id="taskbar-windows"></div>
     <div id="taskbar-controls">
       <button class="taskbar-btn" id="btn-trip">[ TRIP ]</button>
@@ -167,8 +190,8 @@
       <div class="win-body map-body">
         <div class="map-toolbar">
           <button class="pixel-btn map-fit">[ FIT ]</button>
-          <button class="pixel-btn map-toggle-route">[ ROUTE 66 ]</button>
-          <button class="pixel-btn map-toggle-trip">[ TRIP LINE ]</button>
+          <button class="pixel-btn map-toggle-route" title="Faint 1926 historic alignment">[ HISTORIC '26 ]</button>
+          <button class="pixel-btn map-toggle-trip" title="Line connecting your pinned photos in order">[ CENTENNIAL RUN ]</button>
           <span class="map-status">0 pinned</span>
         </div>
         <div style="position:relative; flex:1; min-height:0; display:flex;">
@@ -221,6 +244,13 @@
       </div>
       <div class="win-body trip-body">
         <div class="trip-head">
+          <div class="trip-head-brand">
+            <svg class="trip-head-shield r66" aria-hidden="true"><use href="#r66-shield"/></svg>
+            <div class="trip-head-brand-text">
+              <span class="trip-head-name">THE MOTHER ROAD</span>
+              <span class="trip-head-years">CENTENNIAL RUN · 1926–2026</span>
+            </div>
+          </div>
           <div class="trip-head-top">
             <span class="trip-status trip-status-planning">PLANNING</span>
             <span class="trip-progress">0/0 stops</span>
@@ -308,7 +338,7 @@
         <svg class="r66-about" aria-hidden="true"><use href="#r66-shield"/></svg>
         <div class="about-divider">────────────────────</div>
         <p class="about-stat">FILM OS v1.0</p>
-        <p class="about-stat">© 2026</p>
+        <p class="about-stat">CENTENNIAL RUN · 1926–2026</p>
         <div class="about-divider">────────────────────</div>
         <p class="about-hint">right-click desktop for menu</p>
       </div>
@@ -323,6 +353,7 @@
   <script src="js/window-manager.js?v=66"></script>
   <script src="js/gallery.js?v=66"></script>
   <script src="js/map.js?v=66"></script>
+  <script src="js/landing.js?v=66"></script>
   <script src="js/app.js?v=66"></script>
 </body>
 </html>
