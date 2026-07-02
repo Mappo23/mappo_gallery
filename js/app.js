@@ -1,9 +1,14 @@
 'use strict';
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
 
   // ── Init ──────────────────────────────────────────────────
   WindowManager.init();
+  Auth.init();
+
+  // Pull session + data from the server before opening any windows,
+  // so owner-only controls and existing photos/trip are ready on first paint.
+  await Storage.hydrate();
 
   // ── Theme toggle (compact glyph: [D] dark / [L] light) ────
   const themeBtn = document.getElementById('btn-theme');

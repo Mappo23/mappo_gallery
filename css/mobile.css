@@ -5,16 +5,21 @@
 @media (max-width: 680px) {
   :root { --taskbar-h: 46px; }
 
-  /* Every window fills the screen and stacks by z-index (top one visible) */
-  .win {
+  /* Every window fills the screen and stacks by z-index (top one visible).
+     min-width/height must be zeroed too: desktop rules like
+     .win[data-win="map"] { min-width: 420px } would otherwise beat width:100vw
+     and push the titlebar controls off-screen on narrow phones. */
+  .win, .win-maximized {
     left: 0 !important;
     top: 0 !important;
     width: 100vw !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
     height: calc(100vh - var(--taskbar-h)) !important;
+    height: calc(100dvh - var(--taskbar-h)) !important;  /* dvh: correct under mobile URL bars */
     box-shadow: none;
     border-width: 0 0 2px 0;
   }
-  .win-maximized { width: 100vw !important; height: calc(100vh - var(--taskbar-h)) !important; }
 
   /* Dragging / resizing / maximize don't apply on a phone */
   .win-titlebar { cursor: default; }
@@ -23,10 +28,14 @@
   .win-title { font-size: 9px; }
   .win-btn { width: 26px; height: 26px; font-size: 16px; }
 
-  /* Taskbar: horizontally scrollable strip of bigger touch targets */
+  /* Taskbar: horizontally scrollable strip of bigger touch targets.
+     The logo shrinks to just the R66 shield — it must stay on screen because
+     triple-clicking it is the owner unlock. */
   #taskbar { overflow-x: auto; overflow-y: hidden; gap: 4px; padding: 0 4px; }
   #taskbar::-webkit-scrollbar { display: none; }
-  #taskbar-logo { display: none; }
+  #taskbar-logo { padding: 0 6px 0 2px; gap: 0; }
+  #taskbar-logo .lg-name,
+  #taskbar-logo .lg-tag { display: none; }
   #taskbar-windows { flex: 0 0 auto; }
   #taskbar-controls { border-left: none; padding-left: 4px; }
   .taskbar-btn, .taskbar-win-btn { font-size: 8px; height: 32px; padding: 0 9px; }

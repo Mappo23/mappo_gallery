@@ -1,0 +1,4 @@
+# Never serve the secret config as text, even if PHP handling is disabled.
+<FilesMatch "^config(\.example)?\.php$">
+    Require all denied
+</FilesMatch>

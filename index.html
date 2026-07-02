@@ -16,12 +16,29 @@
   <link rel="stylesheet" href="css/map.css?v=66">
   <link rel="stylesheet" href="css/trip.css?v=66">
   <link rel="stylesheet" href="css/mobile.css?v=66">
+  <link rel="stylesheet" href="css/auth.css?v=66">
   <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
+  <!-- Pixel-art US route shield, defined once and reused (taskbar / desktop / about) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="r66-shield" viewBox="0 0 48 52">
+        <path shape-rendering="crispEdges"
+              fill="var(--r66-fill, none)" stroke="currentColor" stroke-width="2"
+              d="M6 0 H42 V2 H46 V6 H48 V18 H46 V26 H42 V32 H38 V38 H34 V42 H30 V46 H26 V50 H22 V46 H18 V42 H14 V38 H10 V32 H6 V26 H2 V18 H0 V6 H2 V2 H6 Z"/>
+        <text x="24" y="14" text-anchor="middle" fill="currentColor"
+              style="font-family: var(--font-pixel); font-size: 6px;">ROUTE</text>
+        <text x="24" y="33" text-anchor="middle" fill="currentColor"
+              style="font-family: var(--font-pixel); font-size: 13px;">66</text>
+      </symbol>
+    </defs>
+  </svg>
+
   <div id="desktop">
+    <svg id="desktop-emblem" class="r66" aria-hidden="true"><use href="#r66-shield"/></svg>
     <div id="windows-container"></div>
     <div id="context-menu" class="context-menu hidden">
       <div class="context-item" data-action="open-gallery">[ CONTACT SHEET ]</div>
@@ -33,7 +50,7 @@
   </div>
 
   <div id="taskbar">
-    <div id="taskbar-logo"><span class="lg-mark">▓</span><span class="lg-name">FILM<span class="lg-os">OS</span></span><span class="lg-tag">ROUTE 66</span></div>
+    <div id="taskbar-logo"><svg class="lg-mark r66-mini" aria-hidden="true"><use href="#r66-shield"/></svg><span class="lg-name">FILM<span class="lg-os">OS</span></span><span class="lg-tag">ROUTE 66</span></div>
     <div id="taskbar-windows"></div>
     <div id="taskbar-controls">
       <button class="taskbar-btn" id="btn-trip">[ TRIP ]</button>
@@ -121,13 +138,13 @@
           <div class="meta-section">
             <div class="meta-label">MAP PIN</div>
             <div class="meta-value meta-coords unset">not set</div>
-            <button class="pixel-btn meta-pin">[ PIN ON MAP ]</button>
+            <button class="pixel-btn meta-pin owner-only">[ PIN ON MAP ]</button>
           </div>
           <div class="meta-section">
             <div class="meta-label">NOTES</div>
             <textarea class="meta-input meta-caption" placeholder="add notes..." rows="4" maxlength="500" spellcheck="false"></textarea>
           </div>
-          <div class="meta-actions">
+          <div class="meta-actions owner-only">
             <button class="pixel-btn meta-save">[ SAVE ]</button>
             <button class="pixel-btn meta-delete">[ DELETE ]</button>
           </div>
@@ -208,7 +225,7 @@
             <span class="trip-status trip-status-planning">PLANNING</span>
             <span class="trip-progress">0/0 stops</span>
           </div>
-          <div class="trip-controls"></div>
+          <div class="trip-controls owner-only"></div>
         </div>
         <div class="trip-list"></div>
       </div>
@@ -240,7 +257,7 @@
           </div>
           <div class="post-footer">▓ FILM OS · ROUTE 66</div>
         </div>
-        <div class="post-toolbar">
+        <div class="post-toolbar owner-only">
           <button class="pixel-btn post-edit">[ EDIT ]</button>
           <button class="pixel-btn post-current">[ SET LIVE ]</button>
           <button class="pixel-btn post-reached">[ MARK REACHED ]</button>
@@ -288,6 +305,7 @@
  ╚═╝     ╚═╝</pre>
         <p class="about-name">mappo_gallery</p>
         <p class="about-bio">street. 35mm. grain.</p>
+        <svg class="r66-about" aria-hidden="true"><use href="#r66-shield"/></svg>
         <div class="about-divider">────────────────────</div>
         <p class="about-stat">FILM OS v1.0</p>
         <p class="about-stat">© 2026</p>
@@ -298,6 +316,7 @@
   </template>
 
   <script src="js/storage.js?v=66"></script>
+  <script src="js/auth.js?v=66"></script>
   <script src="js/exif.js?v=66"></script>
   <script src="js/route66.js?v=66"></script>
   <script src="js/trip.js?v=66"></script>

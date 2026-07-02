@@ -71,7 +71,11 @@ const WindowManager = {
     const win = this.windows.get(id);
     if (!win) return;
     win.el.remove();
-    win.taskbarBtn?.remove();
+    if (this._isLauncher(win.taskbarBtn)) {
+      win.taskbarBtn.classList.remove('has-win', 'active', 'minimized');
+    } else {
+      win.taskbarBtn?.remove();
+    }
     this.windows.delete(id);
   },
 
@@ -111,7 +115,9 @@ const WindowManager = {
     if (!win) return;
     const el = win.el.querySelector('.win-title');
     if (el) el.textContent = title;
-    if (win.taskbarBtn) win.taskbarBtn.textContent = `[ ${title.replace('▒ ', '')} ]`;
+    if (win.taskbarBtn && !this._isLauncher(win.taskbarBtn)) {
+      win.taskbarBtn.textContent = `[ ${title.replace('▒ ', '')} ]`;
+    }
   },
 
   // ── Private ──────────────────────────────────────────────
@@ -169,6 +175,15 @@ const WindowManager = {
   },
 
   _mkTaskbarBtn(id, type) {
+    // Types with a static launcher (#btn-trip, #btn-map) reuse it as their
+    // window button — no duplicate entry in the taskbar. The launcher's own
+    // click handler (Trip.open / RouteMap.open) already restores/focuses.
+    const launcher = document.getElementById(`btn-${type}`);
+    if (launcher) {
+      launcher.classList.add('has-win', 'active');
+      return launcher;
+    }
+
     const btn = document.createElement('button');
     btn.className   = 'taskbar-win-btn';
     btn.textContent = `[ ${type.toUpperCase()} ]`;
@@ -180,5 +195,9 @@ const WindowManager = {
     });
     this.taskbarWindows.appendChild(btn);
     return btn;
+  },
+
+  _isLauncher(btn) {
+    return !!btn && btn.classList.contains('taskbar-btn');
   },
 };

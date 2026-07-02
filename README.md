@@ -1,19 +1,22 @@
 # FILM OS — `mappo_gallery`
 
-A retro-OS photo diary for a Route 66 trip. Pure HTML/CSS/JS — no framework, no build
-step. Draggable pixel windows, a Leaflet route map, and a live Trip → Post itinerary,
-all wrapped in a sun-faded jet-age theme.
+A retro-OS photo diary for a Route 66 trip (Chicago → LA). Static HTML/CSS/JS
+front-end — no framework, no build step — backed by a small PHP + MySQL API for
+shared storage and owner auth. Draggable pixel windows, a Leaflet route map, and a
+live Trip → Post itinerary, all wrapped in a sun-faded jet-age theme.
 
 ## Run it locally
 
-No install needed — just a static file server:
+Serve the static files:
 
 ```bash
 python3 serve.py          # serves on http://localhost:8000
 ```
 
-Then open <http://localhost:8000>. (Any static server works; `serve.py` just adds
-no-cache headers so edits show up on reload.)
+The desktop, map, and itinerary render locally, but **uploads/edits need the PHP
+backend** (`api/`), which only runs on the hosting server. Locally you get a
+read-only, empty view — that's expected. To deploy the full app (data + login) to
+your Namecheap host, see **[DEPLOY.md](DEPLOY.md)**.
 
 ## Working across devices
 
@@ -39,18 +42,31 @@ cd mappo_gallery
 
 ## How your data works
 
-Git syncs the **app and its look** — not your **content**. Photos and trip progress
-live in the browser's `localStorage` (`filmOS_photos`, `filmOS_trip`), which is
-per-browser and per-device. So uploads and trip state do **not** travel between
-machines via git. (An export/import button could fix that later.)
+Content lives on the **server**, not the browser. Photos are uploaded to
+`uploads/` (files) and their metadata + the trip itinerary live in **MySQL** via the
+`api/` PHP endpoints. So everyone sees the same gallery, and you can add photos from
+any device — they persist and sync. Git still syncs only the **code**; the database
+and `uploads/` stay on the server (and are git-ignored).
+
+The one per-device setting kept in `localStorage` is the light/dark **theme**.
+
+## Owner mode (auth)
+
+Editing is owner-only, enforced server-side. There's **no login box** — visitors see
+a clean, read-only desktop. To unlock: **triple-click the FILM OS logo** (bottom-left
+taskbar) and enter the owner password. Edit controls (upload, save, delete, trip
+editing) then appear; triple-click again to lock. Password setup is in
+[DEPLOY.md](DEPLOY.md).
 
 ## Project layout
 
 ```
 index.html        markup + window templates
-serve.py          tiny no-cache static server
-css/              desktop tokens (themes), windows, gallery, map, trip, mobile
-js/               storage · exif · window-manager · gallery · map · route66 · trip · app
+serve.py          tiny no-cache static server (local dev only)
+css/              desktop tokens (themes), windows, gallery, map, trip, mobile, auth
+js/               storage · auth · exif · window-manager · gallery · map · route66 · trip · app
+api/              PHP backend: db · login/logout/me · photos · trip  (+ config.php, git-ignored)
+uploads/          photo files written by the server (git-ignored)
 ```
 
 - Theme tokens (both light + dark "Sun-faded 66" palettes) live at the top of

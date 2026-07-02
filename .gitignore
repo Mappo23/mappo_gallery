@@ -3,3 +3,11 @@
 
 # Local Claude Code settings (machine-specific)
 .claude/settings.local.json
+
+# Server secrets — never commit
+api/config.php
+
+# Uploaded photos live on the server, not in git
+uploads/*
+!uploads/.htaccess
+!uploads/.gitkeep

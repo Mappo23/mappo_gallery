@@ -1,0 +1,40 @@
+/* Owner-only gating + hidden-unlock feedback.
+   Visitors (default) never see edit controls; they appear only when the
+   body has .is-owner (set by Storage after a successful unlock). */
+
+body:not(.is-owner) .owner-only {
+  display: none !important;
+}
+
+/* Subtle "you are the owner" tell on the logo — no extra chrome. */
+body.is-owner #taskbar-logo .lg-mark {
+  color: var(--accent, #e8b04b);
+}
+#taskbar-logo {
+  cursor: default;
+  user-select: none;
+}
+
+/* Unlock/lock toast (created on demand by auth.js). */
+#auth-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%) translateY(8px);
+  padding: 8px 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #0d0d0d;
+  background: var(--accent, #e8b04b);
+  border: 2px solid #0d0d0d;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 9999;
+}
+#auth-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

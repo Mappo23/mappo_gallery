@@ -170,27 +170,29 @@ const Upload = {
   async loadOne(file) {
     if (!file || !file.type.startsWith('image/')) throw new Error('not an image');
     const photo = await Upload._build(file);
-    Storage.addPhoto(photo);
+    await Storage.addPhoto(photo);   // uploads to the server, updates the cache
     Gallery.refresh();
     return photo;
   },
 
+  // Builds the upload payload: EXIF + two resized JPEGs. The server writes the
+  // images to /uploads and returns the stored record (with real image URLs).
   async _build(file) {
-    const [exifData, dataUrl, thumbnail] = await Promise.all([
+    const [exifData, fullDataUrl, thumbDataUrl] = await Promise.all([
       ExifHandler.extract(file),
       Upload._resize(file, 1100, 0.82),
       Upload._resize(file, 320,  0.68),
     ]);
 
     return {
-      id:       `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      filename: file.name,
-      dataUrl,
-      thumbnail,
-      addedAt:  new Date().toISOString(),
-      exif:     exifData,
-      location: '',
-      caption:  '',
+      id:           `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      filename:     file.name,
+      fullDataUrl,                 // → /uploads/<id>.jpg
+      thumbDataUrl,                // → /uploads/<id>_thumb.jpg
+      addedAt:      new Date().toISOString(),
+      exif:         exifData,
+      location:     '',
+      caption:      '',
     };
   },
 
