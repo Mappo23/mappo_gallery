@@ -183,6 +183,13 @@
   color: var(--text-muted);
   margin-bottom: 8px;
 }
+.post-lodging {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
 .post-thoughts {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -190,6 +197,11 @@
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
+}
+/* Pre-trip plan preview — shown until the owner writes real diary thoughts */
+.post-thoughts.is-plan {
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 /* Boarding-pass-style credit stamp */

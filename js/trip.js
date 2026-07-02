@@ -1,20 +1,95 @@
 'use strict';
 
 // ── Seed itinerary ───────────────────────────────────────────────────────────
-// SAMPLE Route 66 plan — replace names/coords with the real landmarks later.
-// Live state (reached / current / posts) is stored separately in localStorage,
-// so editing this seed only affects a fresh trip (use [ RESET ] to re-seed).
+// Real planned trip: Chicago → LA (Route 66) → Big Sur detour → home, 02–15 Jul 2026.
+// `plan` is a pre-trip note shown until the owner posts real thoughts for that stop;
+// `lodging` is where the night is booked. Live state (reached / current / posts) is
+// stored separately, so editing this seed only affects a fresh trip ([ RESET ] to re-seed).
 const TRIP_SEED = {
   status: 'planning',          // 'planning' | 'live' | 'done'
   currentStopId: null,
   stops: [
-    { id: 'seed-1', name: 'Chicago, IL',      lat: 41.8781,  lng: -87.6298,  order: 0, reached: false, date: '', photoId: null, thoughts: '' },
-    { id: 'seed-2', name: 'St. Louis, MO',    lat: 38.6270,  lng: -90.1994,  order: 1, reached: false, date: '', photoId: null, thoughts: '' },
-    { id: 'seed-3', name: 'Tulsa, OK',        lat: 36.1540,  lng: -95.9928,  order: 2, reached: false, date: '', photoId: null, thoughts: '' },
-    { id: 'seed-4', name: 'Amarillo, TX',     lat: 35.2220,  lng: -101.8313, order: 3, reached: false, date: '', photoId: null, thoughts: '' },
-    { id: 'seed-5', name: 'Santa Fe, NM',     lat: 35.6870,  lng: -105.9378, order: 4, reached: false, date: '', photoId: null, thoughts: '' },
-    { id: 'seed-6', name: 'Flagstaff, AZ',    lat: 35.1983,  lng: -111.6513, order: 5, reached: false, date: '', photoId: null, thoughts: '' },
-    { id: 'seed-7', name: 'Santa Monica, CA', lat: 34.0195,  lng: -118.4912, order: 6, reached: false, date: '', photoId: null, thoughts: '' },
+    { id: 'trip-01', name: 'Chicago, IL',
+      lat: 41.8781, lng: -87.6298, order: 0, reached: false,
+      date: '2026-07-02', photoId: null, thoughts: '',
+      plan: "Trip kickoff — Route 66's eastern start.",
+      lodging: 'Antonio Inn' },
+
+    { id: 'trip-02', name: 'Joplin, MO',
+      lat: 37.0842, lng: -94.5133, order: 1, reached: false,
+      date: '2026-07-03', photoId: null, thoughts: '',
+      plan: '900 km via I-55 through Springfield, then I-44 from St. Louis — Gateway Arch en route.',
+      lodging: 'Days Inn by Wyndham' },
+
+    { id: 'trip-03', name: 'Amarillo, TX',
+      lat: 35.2220, lng: -101.8313, order: 2, reached: false,
+      date: '2026-07-04', photoId: null, thoughts: '',
+      plan: '770 km via I-44 through Tulsa, then I-40 from Oklahoma City — Cadillac Ranch.',
+      lodging: 'Motel 6' },
+
+    { id: 'trip-04', name: 'Albuquerque, NM',
+      lat: 35.2941, lng: -106.5583, order: 3, reached: false,
+      date: '2026-07-05', photoId: null, thoughts: '',
+      plan: '460 km on I-40 through Tucumcari & Santa Rosa (Blue Hole). Based in Bernalillo.',
+      lodging: 'Motel 6 — 210 North Hill Road, Bernalillo, NM' },
+
+    { id: 'trip-05', name: 'Santa Fe & Taos loop',
+      lat: 35.2941, lng: -106.5583, order: 4, reached: false,
+      date: '2026-07-06', photoId: null, thoughts: '',
+      plan: '400 km day loop from Bernalillo: High Road (RD 76) to Taos Pueblo via Chimayó & Córdova, Low Road (RD 68) back along the Rio Grande gorge.',
+      lodging: 'Motel 6 — 210 North Hill Road, Bernalillo, NM' },
+
+    { id: 'trip-06', name: 'Monument Valley',
+      lat: 36.9840, lng: -110.0972, order: 5, reached: false,
+      date: '2026-07-07', photoId: null, thoughts: '',
+      plan: '800 km via I-40 through Chambers, Canyon de Chelly & Kayenta, then Scenic Byway 163. Overnight in Bluff, UT.',
+      lodging: 'Bluff Gardens — 550 East Main, Bluff, UT 84512' },
+
+    { id: 'trip-07', name: 'Grand Canyon Village',
+      lat: 36.0544, lng: -112.1401, order: 6, reached: false,
+      date: '2026-07-08', photoId: null, thoughts: '',
+      plan: '300–490 km, optional detour to Page for Horseshoe Bend / Antelope Canyon (guided tour — book ahead).',
+      lodging: 'Bright Angel Lodge — 9 Village Loop Drive, Grand Canyon, AZ' },
+
+    { id: 'trip-08', name: 'Grand Canyon — South Rim',
+      lat: 36.0544, lng: -112.1401, order: 7, reached: false,
+      date: '2026-07-09', photoId: null, thoughts: '',
+      plan: 'Full day on the South Rim — morning walk down the South Kaibab Trail.',
+      lodging: 'Bright Angel Lodge — 9 Village Loop Drive, Grand Canyon, AZ' },
+
+    { id: 'trip-09', name: 'Phoenix / Scottsdale',
+      lat: 33.4942, lng: -111.9261, order: 8, reached: false,
+      date: '2026-07-10', photoId: null, thoughts: '',
+      plan: '370 km via Sedona, Arcosanti, and Taliesin West (9–12pm, booking required).',
+      lodging: 'Motel 6 — 1612 North Scottsdale Road, Tempe, AZ' },
+
+    { id: 'trip-10', name: 'Joshua Tree (29 Palms)',
+      lat: 34.1355, lng: -116.0542, order: 9, reached: false,
+      date: '2026-07-11', photoId: null, thoughts: '',
+      plan: '530 km crossing the desert via Indio/Coachella & Palm Springs — Frey House II, Palm Springs Art Museum.',
+      lodging: '29 Palms Inn — 73950 Inn Avenue, Twentynine Palms, CA' },
+
+    { id: 'trip-11', name: 'Santa Monica — Route 66 ends',
+      lat: 34.0094, lng: -118.4973, order: 10, reached: false,
+      date: '2026-07-12', photoId: null, thoughts: '',
+      plan: '300 km into LA: Griffith Observatory, Hollyhock House (F.L. Wright), Getty Center, then the Santa Monica Pier — the end of Route 66.',
+      lodging: 'Motel 6 — 1516 Newbury Rd, Thousand Oaks, CA 91320' },
+
+    { id: 'trip-12', name: 'Big Sur',
+      lat: 36.2704, lng: -121.8081, order: 11, reached: false,
+      date: '2026-07-13', photoId: null, thoughts: '',
+      plan: 'Up the Ventura Highway to Pfeiffer Beach — Bixby Creek Bridge, McWay Falls.',
+      lodging: 'Lucia Lodge — 62400 Hwy 1, Big Sur, CA 93920' },
+
+    { id: 'trip-13', name: 'Thousand Oaks',
+      lat: 34.1706, lng: -118.8376, order: 12, reached: false,
+      date: '2026-07-14', photoId: null, thoughts: '',
+      plan: '380 km back down the coast via Morro Bay & Santa Barbara.',
+      lodging: 'Motel 6 — 1516 Newbury Rd, Thousand Oaks, CA 91320' },
+
+    // Day 15 (flight LAX → Chicago) and day 16 (home) are travel logistics, not
+    // photographable trip stops — omitted so the map's planned route doesn't
+    // draw a straight "drive" line for what's actually a flight.
   ],
 };
 
@@ -154,14 +229,19 @@ const Trip = {
       const isCurrent = trip.status === 'live' && s.id === trip.currentStopId;
       const glyph = s.reached ? '★' : (isCurrent ? '◉' : '☆');
       const cls   = `trip-stop${s.reached ? ' is-reached' : ''}${isCurrent ? ' is-current' : ''}`;
-      const bits  = [s.date || null, s.photoId ? 'photo' : null, s.thoughts ? 'note' : null].filter(Boolean);
+      // Post bits (photo/note) once the owner has written something for this
+      // stop; until then, fall back to the pre-trip plan blurb as a preview.
+      const postBits = [s.photoId ? 'photo' : null, s.thoughts ? 'note' : null].filter(Boolean);
+      const sub = postBits.length
+        ? [s.date || null, ...postBits].filter(Boolean).join(' · ')
+        : [s.date || null, s.plan || 'no post yet'].filter(Boolean).join(' — ');
       return `
         <div class="${cls}" data-id="${s.id}">
           <span class="trip-stop-glyph">${glyph}</span>
           <span class="trip-stop-idx">${String(i + 1).padStart(2, '0')}</span>
           <div class="trip-stop-body">
             <div class="trip-stop-name">${s.name}</div>
-            <div class="trip-stop-sub">${bits.join(' · ') || 'no post yet'}</div>
+            <div class="trip-stop-sub">${sub}</div>
           </div>
           <button class="pixel-btn trip-stop-post" data-id="${s.id}">[ POST ]</button>
         </div>`;
@@ -211,7 +291,15 @@ const Trip = {
     }
     winEl.querySelector('.post-loc').textContent      = stop.name;
     winEl.querySelector('.post-date').textContent     = stop.date || '';
-    winEl.querySelector('.post-thoughts').textContent = stop.thoughts || '“no thoughts yet — tap EDIT”';
+
+    const lodgingEl = winEl.querySelector('.post-lodging');
+    lodgingEl.textContent = stop.lodging ? `STAY — ${stop.lodging}` : '';
+    lodgingEl.hidden = !stop.lodging;
+
+    // Real diary thoughts once written; otherwise preview the pre-trip plan.
+    const thoughtsEl = winEl.querySelector('.post-thoughts');
+    thoughtsEl.classList.toggle('is-plan', !stop.thoughts);
+    thoughtsEl.textContent = stop.thoughts || stop.plan || '“no thoughts yet — tap EDIT”';
     winEl.querySelector('.post-footer').innerHTML =
       `<span class="pf-brand">▓ FILM&nbsp;OS</span>` +
       `<span class="pf-route">ROUTE 66</span>` +
