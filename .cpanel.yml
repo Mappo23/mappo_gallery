@@ -6,6 +6,7 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/public_html/
     - /bin/cp -R index.html $DEPLOYPATH
+    - /bin/cp -R favicon.svg favicon-16x16.png favicon-32x32.png apple-touch-icon.png icon-192.png $DEPLOYPATH
     - /bin/mkdir -p $DEPLOYPATH/api $DEPLOYPATH/css $DEPLOYPATH/js
     - /bin/cp -R api/. $DEPLOYPATH/api/
     - /bin/cp -R css/. $DEPLOYPATH/css/
