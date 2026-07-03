@@ -15,10 +15,16 @@ const TRIP_SEED = {
       plan: "Trip kickoff — Route 66's eastern start.",
       lodging: 'Antonio Inn' },
 
+    { id: 'trip-01b', name: 'St. Louis, MO — Broadway Oyster Bar',
+      lat: 38.6119, lng: -90.1919, order: 0.5, reached: false,
+      date: '2026-07-03', photoId: null, thoughts: '',
+      plan: 'Lunch stop on I-44 through St. Louis, right by the Gateway Arch.',
+      lodging: 'Broadway Oyster Bar — 736 S. Broadway, St. Louis, MO' },
+
     { id: 'trip-02', name: 'Joplin, MO',
       lat: 37.0842, lng: -94.5133, order: 1, reached: false,
       date: '2026-07-03', photoId: null, thoughts: '',
-      plan: '900 km via I-55 through Springfield, then I-44 from St. Louis — Gateway Arch en route.',
+      plan: '900 km via I-55 through Springfield, then I-44 from St. Louis.',
       lodging: 'Days Inn by Wyndham' },
 
     { id: 'trip-03', name: 'Amarillo, TX',
