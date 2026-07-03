@@ -17,8 +17,8 @@
 .win-maximized {
   left: 0   !important;
   top:  0   !important;
-  width:  100vw                              !important;
-  height: calc(100vh - var(--taskbar-h))    !important;
+  width:  100vw                                    !important;
+  height: calc(100vh - var(--taskbar-total-h))    !important;
 }
 
 /* ── Title bar ────────────────────────────────────────────── */

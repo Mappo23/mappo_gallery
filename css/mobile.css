@@ -15,8 +15,8 @@
     width: 100vw !important;
     min-width: 0 !important;
     min-height: 0 !important;
-    height: calc(100vh - var(--taskbar-h)) !important;
-    height: calc(100dvh - var(--taskbar-h)) !important;  /* dvh: correct under mobile URL bars */
+    height: calc(100vh - var(--taskbar-total-h)) !important;
+    height: calc(100dvh - var(--taskbar-total-h)) !important;  /* dvh: correct under mobile URL bars */
     box-shadow: none;
     border-width: 0 0 2px 0;
   }
@@ -31,7 +31,10 @@
   /* Taskbar: horizontally scrollable strip of bigger touch targets.
      The logo shrinks to just the R66 shield — it must stay on screen because
      triple-clicking it is the owner unlock. */
-  #taskbar { overflow-x: auto; overflow-y: hidden; gap: 4px; padding: 0 4px; }
+  #taskbar {
+    overflow-x: auto; overflow-y: hidden; gap: 4px;
+    padding: 0 calc(4px + env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) calc(4px + env(safe-area-inset-left, 0px));
+  }
   #taskbar::-webkit-scrollbar { display: none; }
   #taskbar-logo { padding: 0 6px 0 2px; gap: 0; }
   #taskbar-logo .lg-name,

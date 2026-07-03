@@ -42,6 +42,9 @@
   --font-mono:  'Courier Prime', Courier, monospace;
 
   --taskbar-h: 38px;
+  /* Real on-screen taskbar height, including the iOS home-indicator inset —
+     use this (not --taskbar-h) for anything sizing space around the taskbar. */
+  --taskbar-total-h: calc(var(--taskbar-h) + env(safe-area-inset-bottom, 0px));
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -91,7 +94,7 @@ body {
 /* ── Desktop ─────────────────────────────────────────────── */
 #desktop {
   position: fixed;
-  inset: 0 0 var(--taskbar-h) 0;
+  inset: 0 0 var(--taskbar-total-h) 0;
   background:
     repeating-linear-gradient(
       0deg,
@@ -149,12 +152,12 @@ body {
 #taskbar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  height: var(--taskbar-h);
+  height: calc(var(--taskbar-h) + env(safe-area-inset-bottom, 0px));
   background: var(--s1);
   border-top: 2px solid var(--border-hi);
   display: flex;
   align-items: center;
-  padding: 0 6px;
+  padding: 0 calc(6px + env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) calc(6px + env(safe-area-inset-left, 0px));
   gap: 6px;
   z-index: 10000;
 }
