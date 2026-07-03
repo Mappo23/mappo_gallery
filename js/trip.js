@@ -11,85 +11,85 @@ const TRIP_SEED = {
   stops: [
     { id: 'trip-01', name: 'Chicago, IL',
       lat: 41.8781, lng: -87.6298, order: 0, reached: false,
-      date: '2026-07-02', photoId: null, thoughts: '',
+      date: '2026-07-02', photoIds: [], thoughts: '',
       plan: "Trip kickoff — Route 66's eastern start.",
       lodging: 'Antonio Inn' },
 
     { id: 'trip-01b', name: 'St. Louis, MO — Broadway Oyster Bar',
       lat: 38.6119, lng: -90.1919, order: 0.5, reached: false,
-      date: '2026-07-03', photoId: null, thoughts: '',
+      date: '2026-07-03', photoIds: [], thoughts: '',
       plan: 'Lunch stop on I-44 through St. Louis, right by the Gateway Arch.',
       lodging: 'Broadway Oyster Bar — 736 S. Broadway, St. Louis, MO' },
 
     { id: 'trip-02', name: 'Joplin, MO',
       lat: 37.0842, lng: -94.5133, order: 1, reached: false,
-      date: '2026-07-03', photoId: null, thoughts: '',
+      date: '2026-07-03', photoIds: [], thoughts: '',
       plan: '900 km via I-55 through Springfield, then I-44 from St. Louis.',
       lodging: 'Days Inn by Wyndham' },
 
     { id: 'trip-03', name: 'Amarillo, TX',
       lat: 35.2220, lng: -101.8313, order: 2, reached: false,
-      date: '2026-07-04', photoId: null, thoughts: '',
+      date: '2026-07-04', photoIds: [], thoughts: '',
       plan: '770 km via I-44 through Tulsa, then I-40 from Oklahoma City — Cadillac Ranch.',
       lodging: 'Motel 6' },
 
     { id: 'trip-04', name: 'Albuquerque, NM',
       lat: 35.2941, lng: -106.5583, order: 3, reached: false,
-      date: '2026-07-05', photoId: null, thoughts: '',
+      date: '2026-07-05', photoIds: [], thoughts: '',
       plan: '460 km on I-40 through Tucumcari & Santa Rosa (Blue Hole). Based in Bernalillo.',
       lodging: 'Motel 6 — 210 North Hill Road, Bernalillo, NM' },
 
     { id: 'trip-05', name: 'Santa Fe & Taos loop',
       lat: 35.2941, lng: -106.5583, order: 4, reached: false,
-      date: '2026-07-06', photoId: null, thoughts: '',
+      date: '2026-07-06', photoIds: [], thoughts: '',
       plan: '400 km day loop from Bernalillo: High Road (RD 76) to Taos Pueblo via Chimayó & Córdova, Low Road (RD 68) back along the Rio Grande gorge.',
       lodging: 'Motel 6 — 210 North Hill Road, Bernalillo, NM' },
 
     { id: 'trip-06', name: 'Monument Valley',
       lat: 36.9840, lng: -110.0972, order: 5, reached: false,
-      date: '2026-07-07', photoId: null, thoughts: '',
+      date: '2026-07-07', photoIds: [], thoughts: '',
       plan: '800 km via I-40 through Chambers, Canyon de Chelly & Kayenta, then Scenic Byway 163. Overnight in Bluff, UT.',
       lodging: 'Bluff Gardens — 550 East Main, Bluff, UT 84512' },
 
     { id: 'trip-07', name: 'Grand Canyon Village',
       lat: 36.0544, lng: -112.1401, order: 6, reached: false,
-      date: '2026-07-08', photoId: null, thoughts: '',
+      date: '2026-07-08', photoIds: [], thoughts: '',
       plan: '300–490 km, optional detour to Page for Horseshoe Bend / Antelope Canyon (guided tour — book ahead).',
       lodging: 'Bright Angel Lodge — 9 Village Loop Drive, Grand Canyon, AZ' },
 
     { id: 'trip-08', name: 'Grand Canyon — South Rim',
       lat: 36.0544, lng: -112.1401, order: 7, reached: false,
-      date: '2026-07-09', photoId: null, thoughts: '',
+      date: '2026-07-09', photoIds: [], thoughts: '',
       plan: 'Full day on the South Rim — morning walk down the South Kaibab Trail.',
       lodging: 'Bright Angel Lodge — 9 Village Loop Drive, Grand Canyon, AZ' },
 
     { id: 'trip-09', name: 'Phoenix / Scottsdale',
       lat: 33.4942, lng: -111.9261, order: 8, reached: false,
-      date: '2026-07-10', photoId: null, thoughts: '',
+      date: '2026-07-10', photoIds: [], thoughts: '',
       plan: '370 km via Sedona, Arcosanti, and Taliesin West (9–12pm, booking required).',
       lodging: 'Motel 6 — 1612 North Scottsdale Road, Tempe, AZ' },
 
     { id: 'trip-10', name: 'Joshua Tree (29 Palms)',
       lat: 34.1355, lng: -116.0542, order: 9, reached: false,
-      date: '2026-07-11', photoId: null, thoughts: '',
+      date: '2026-07-11', photoIds: [], thoughts: '',
       plan: '530 km crossing the desert via Indio/Coachella & Palm Springs — Frey House II, Palm Springs Art Museum.',
       lodging: '29 Palms Inn — 73950 Inn Avenue, Twentynine Palms, CA' },
 
     { id: 'trip-11', name: 'Santa Monica — Route 66 ends',
       lat: 34.0094, lng: -118.4973, order: 10, reached: false,
-      date: '2026-07-12', photoId: null, thoughts: '',
+      date: '2026-07-12', photoIds: [], thoughts: '',
       plan: '300 km into LA: Griffith Observatory, Hollyhock House (F.L. Wright), Getty Center, then the Santa Monica Pier — the end of Route 66.',
       lodging: 'Motel 6 — 1516 Newbury Rd, Thousand Oaks, CA 91320' },
 
     { id: 'trip-12', name: 'Big Sur',
       lat: 36.2704, lng: -121.8081, order: 11, reached: false,
-      date: '2026-07-13', photoId: null, thoughts: '',
+      date: '2026-07-13', photoIds: [], thoughts: '',
       plan: 'Up the Ventura Highway to Pfeiffer Beach — Bixby Creek Bridge, McWay Falls.',
       lodging: 'Lucia Lodge — 62400 Hwy 1, Big Sur, CA 93920' },
 
     { id: 'trip-13', name: 'Thousand Oaks',
       lat: 34.1706, lng: -118.8376, order: 12, reached: false,
-      date: '2026-07-14', photoId: null, thoughts: '',
+      date: '2026-07-14', photoIds: [], thoughts: '',
       plan: '380 km back down the coast via Morro Bay & Santa Barbara.',
       lodging: 'Motel 6 — 1516 Newbury Rd, Thousand Oaks, CA 91320' },
 
@@ -123,16 +123,19 @@ const Trip = {
     if (typeof stop.lat === 'number' && typeof stop.lng === 'number') {
       return { lat: stop.lat, lng: stop.lng };
     }
-    if (stop.photoId) {
-      const p = Storage.getPhotos().find(x => x.id === stop.photoId);
-      const c = Storage.getCoords(p);
+    const cover = Trip.stopPhotos(stop)[0];
+    if (cover) {
+      const c = Storage.getCoords(cover);
       if (c) return c;
     }
     return null;
   },
 
-  stopPhoto(stop) {
-    return stop.photoId ? Storage.getPhotos().find(p => p.id === stop.photoId) : null;
+  // All photos linked to a stop, in the order they were selected.
+  stopPhotos(stop) {
+    if (!stop.photoIds || !stop.photoIds.length) return [];
+    const photos = Storage.getPhotos();
+    return stop.photoIds.map(id => photos.find(p => p.id === id)).filter(Boolean);
   },
 
   // ── Trip progression ──────────────────────────────────────
@@ -237,7 +240,11 @@ const Trip = {
       const cls   = `trip-stop${s.reached ? ' is-reached' : ''}${isCurrent ? ' is-current' : ''}`;
       // Post bits (photo/note) once the owner has written something for this
       // stop; until then, fall back to the pre-trip plan blurb as a preview.
-      const postBits = [s.photoId ? 'photo' : null, s.thoughts ? 'note' : null].filter(Boolean);
+      const photoCount = s.photoIds?.length || 0;
+      const postBits = [
+        photoCount ? (photoCount > 1 ? `${photoCount} photos` : 'photo') : null,
+        s.thoughts ? 'note' : null,
+      ].filter(Boolean);
       const sub = postBits.length
         ? [s.date || null, ...postBits].filter(Boolean).join(' · ')
         : [s.date || null, s.plan || 'no post yet'].filter(Boolean).join(' — ');
@@ -282,18 +289,23 @@ const Trip = {
     const stop  = stops[idx];
     if (!stop) return;
 
-    const photo = Trip.stopPhoto(stop);
+    const photos = Trip.stopPhotos(stop);   // cover = photos[0]
 
     winEl.querySelector('.win-title').textContent = `▒ POST — ${stop.name}`;
     winEl.classList.remove('editing');
 
-    // Card (read view)
+    // Card (read view) — first linked photo is the cover; a badge shows the rest.
     const img   = winEl.querySelector('.post-img');
     const noimg = winEl.querySelector('.post-noimg');
-    if (photo) {
-      img.src = photo.dataUrl; img.hidden = false; noimg.hidden = true;
+    const countEl = winEl.querySelector('.post-photo-count');
+    if (photos.length) {
+      img.src = photos[0].dataUrl; img.hidden = false; noimg.hidden = true;
     } else {
       img.removeAttribute('src'); img.hidden = true; noimg.hidden = false;
+    }
+    if (countEl) {
+      countEl.textContent = `+${photos.length - 1}`;
+      countEl.hidden = photos.length < 2;
     }
     winEl.querySelector('.post-loc').textContent      = stop.name;
     winEl.querySelector('.post-date').textContent     = stop.date || '';
@@ -326,9 +338,11 @@ const Trip = {
     winEl.querySelector('.post-edit-thoughts').value = stop.thoughts || '';
 
     const sel = winEl.querySelector('.post-edit-photo');
-    const photos = Storage.getPhotos();
-    sel.innerHTML = '<option value="">— no photo —</option>' +
-      photos.map(p => `<option value="${p.id}" ${p.id === stop.photoId ? 'selected' : ''}>${p.filename}</option>`).join('');
+    const allPhotos = Storage.getPhotos();
+    const linked = new Set(stop.photoIds || []);
+    sel.innerHTML = allPhotos
+      .map(p => `<option value="${p.id}" ${linked.has(p.id) ? 'selected' : ''}>${p.filename}</option>`)
+      .join('');
   },
 
   _bindPost(winEl) {
@@ -348,9 +362,13 @@ const Trip = {
       try {
         const photo = await Upload.loadOne(file);
         const sel = winEl.querySelector('.post-edit-photo');
-        const photos = Storage.getPhotos();
-        sel.innerHTML = '<option value="">— no photo —</option>' +
-          photos.map(p => `<option value="${p.id}" ${p.id === photo.id ? 'selected' : ''}>${p.filename}</option>`).join('');
+        // Keep whatever was already selected, and add the newly loaded photo.
+        const keep = new Set([...sel.selectedOptions].map(o => o.value));
+        keep.add(photo.id);
+        const allPhotos = Storage.getPhotos();
+        sel.innerHTML = allPhotos
+          .map(p => `<option value="${p.id}" ${keep.has(p.id) ? 'selected' : ''}>${p.filename}</option>`)
+          .join('');
       } catch (err) {
         alert(`Could not load film: ${err.message}`);
       } finally {
@@ -361,10 +379,11 @@ const Trip = {
 
     winEl.querySelector('.post-cancel').addEventListener('click', () => { winEl.classList.remove('editing'); Trip._renderPost(winEl, Trip.postStopId); });
     winEl.querySelector('.post-save').addEventListener('click', () => {
+      const sel = winEl.querySelector('.post-edit-photo');
       Trip.savePost(Trip.postStopId, {
-        date:     winEl.querySelector('.post-edit-date').value,
-        thoughts: winEl.querySelector('.post-edit-thoughts').value.trim(),
-        photoId:  winEl.querySelector('.post-edit-photo').value || null,
+        date:      winEl.querySelector('.post-edit-date').value,
+        thoughts:  winEl.querySelector('.post-edit-thoughts').value.trim(),
+        photoIds:  [...sel.selectedOptions].map(o => o.value),
       });
       winEl.classList.remove('editing');
       Trip._renderPost(winEl, Trip.postStopId);

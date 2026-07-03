@@ -178,6 +178,17 @@
   font-size: 17px;
   color: var(--placeholder);
 }
+/* "+N" badge — how many more photos are linked beyond the cover shown */
+.post-photo-count {
+  position: absolute;
+  right: 8px; bottom: 8px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid var(--text-muted);
+  padding: 3px 6px;
+}
 
 .post-state {
   align-self: flex-start;
@@ -297,8 +308,9 @@
 .post-editor textarea:focus { border-color: var(--accent-dim); }
 .post-editor textarea { min-height: 90px; resize: vertical; line-height: 1.4; }
 
-/* LINKED PHOTO row: select + inline film loader */
-.post-photo-row { display: flex; gap: 6px; align-items: stretch; }
+/* LINKED PHOTOS row: multi-select listbox + inline film loader */
+.post-photo-hint { text-transform: none; letter-spacing: normal; color: var(--placeholder); }
+.post-photo-row { display: flex; gap: 6px; align-items: flex-start; }
 .post-photo-row .post-edit-photo { flex: 1; min-width: 0; }
 .post-load { flex-shrink: 0; font-size: 6px !important; white-space: nowrap; }
 

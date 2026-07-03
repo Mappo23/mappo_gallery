@@ -297,11 +297,13 @@
           <div class="post-photo">
             <img class="post-img" src="" alt="" hidden>
             <div class="post-noimg">no image linked</div>
+            <span class="post-photo-count" hidden></span>
           </div>
           <span class="post-state st-planned">☆ PLANNED</span>
           <div class="post-info">
             <div class="post-loc">—</div>
             <div class="post-date"></div>
+            <div class="post-lodging"></div>
             <div class="post-thoughts"></div>
           </div>
           <div class="post-footer">▓ FILM OS · ROUTE 66</div>
@@ -315,9 +317,9 @@
           <label>DATE
             <input class="post-edit-date" type="date">
           </label>
-          <label>LINKED PHOTO
+          <label>LINKED PHOTOS <span class="post-photo-hint">(select more than one)</span>
             <div class="post-photo-row">
-              <select class="post-edit-photo"></select>
+              <select class="post-edit-photo" multiple size="4"></select>
               <button type="button" class="pixel-btn post-load" title="Load a photo from this device">[ + FILM ]</button>
             </div>
             <input class="post-load-input" type="file" accept="image/*" hidden>
