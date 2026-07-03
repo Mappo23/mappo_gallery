@@ -1,0 +1,12 @@
+---
+# cPanel Git Version Control deployment.
+# Copies the app into public_html, leaving api/config.php and uploads/
+# (both git-ignored, server-only) completely untouched.
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html/
+    - /bin/cp -R index.html $DEPLOYPATH
+    - /bin/mkdir -p $DEPLOYPATH/api $DEPLOYPATH/css $DEPLOYPATH/js
+    - /bin/cp -R api/. $DEPLOYPATH/api/
+    - /bin/cp -R css/. $DEPLOYPATH/css/
+    - /bin/cp -R js/. $DEPLOYPATH/js/
