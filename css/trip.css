@@ -178,39 +178,26 @@
   font-size: 17px;
   color: var(--placeholder);
 }
-/* "n/total" badge — which of the linked photos is showing */
-.post-photo-count {
-  position: absolute;
-  right: 8px; bottom: 8px;
-  font-family: var(--font-pixel);
-  font-size: 9px;
-  color: var(--text);
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid var(--text-muted);
-  padding: 3px 6px;
-}
-
-/* Prev/next arrows overlaid on the post cover photo */
+/* Prev/next row — sits below the photo, same pattern as the Gallery's
+   full-size photo viewer (.photo-nav), so it's a familiar, clearly-visible
+   control instead of small overlay arrows on top of the image. */
 .post-photo-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
-  font-family: var(--font-mono);
-  font-size: 20px;
-  line-height: 1;
-  color: var(--text);
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--text-muted);
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--s1);
+  border-bottom: 2px solid var(--border-lo);
 }
-.post-photo-nav:hover { background: rgba(0, 0, 0, 0.75); color: var(--accent); }
-.post-photo-prev { left: 8px; }
-.post-photo-next { right: 8px; }
+.post-photo-nav .pixel-btn { flex: 1; }
+.post-photo-count {
+  flex-shrink: 0;
+  font-family: var(--font-vt);
+  font-size: 15px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
 
 .post-state {
   align-self: flex-start;

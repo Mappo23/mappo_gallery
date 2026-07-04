@@ -369,19 +369,16 @@ const Trip = {
     const idx    = Trip._postPhotoIdx || 0;
     const img     = winEl.querySelector('.post-img');
     const noimg   = winEl.querySelector('.post-noimg');
+    const navRow  = winEl.querySelector('.post-photo-nav');
     const countEl = winEl.querySelector('.post-photo-count');
-    const prevBtn = winEl.querySelector('.post-photo-prev');
-    const nextBtn = winEl.querySelector('.post-photo-next');
 
     if (photos.length) {
       img.src = photos[idx].dataUrl; img.hidden = false; noimg.hidden = true;
     } else {
       img.removeAttribute('src'); img.hidden = true; noimg.hidden = false;
     }
-    countEl.textContent = `${idx + 1}/${photos.length}`;
-    countEl.hidden = photos.length < 2;
-    prevBtn.hidden = photos.length < 2;
-    nextBtn.hidden = photos.length < 2;
+    countEl.textContent = `${idx + 1} / ${photos.length}`;
+    navRow.hidden = photos.length < 2;
   },
 
   // Removable-chip list of photos linked to the post being edited.
@@ -413,18 +410,21 @@ const Trip = {
     winEl.querySelector('.post-edit').addEventListener('click', () => winEl.classList.toggle('editing'));
 
     // Cycle through this stop's linked photos (hidden when there's only one).
-    winEl.querySelector('.post-photo-prev').addEventListener('click', () => {
-      const n = (Trip._postPhotos || []).length;
-      if (!n) return;
-      Trip._postPhotoIdx = (Trip._postPhotoIdx - 1 + n) % n;
-      Trip._renderPostPhoto(winEl);
-    });
-    winEl.querySelector('.post-photo-next').addEventListener('click', () => {
-      const n = (Trip._postPhotos || []).length;
-      if (!n) return;
-      Trip._postPhotoIdx = (Trip._postPhotoIdx + 1) % n;
-      Trip._renderPostPhoto(winEl);
-    });
+    // Buttons briefly disable themselves after a tap — a small guard against
+    // double-fire on touch devices skipping a photo.
+    const bindPhotoNav = (btn, delta) => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        const n = (Trip._postPhotos || []).length;
+        if (!n) return;
+        Trip._postPhotoIdx = (Trip._postPhotoIdx + delta + n) % n;
+        Trip._renderPostPhoto(winEl);
+        btn.disabled = true;
+        setTimeout(() => { btn.disabled = false; }, 250);
+      });
+    };
+    bindPhotoNav(winEl.querySelector('.post-photo-prev'), -1);
+    bindPhotoNav(winEl.querySelector('.post-photo-next'), +1);
 
     // Inline film loader — same entry point as LINKED PHOTO.
     const loadBtn   = winEl.querySelector('.post-load');
