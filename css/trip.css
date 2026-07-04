@@ -178,7 +178,7 @@
   font-size: 17px;
   color: var(--placeholder);
 }
-/* "+N" badge — how many more photos are linked beyond the cover shown */
+/* "n/total" badge — which of the linked photos is showing */
 .post-photo-count {
   position: absolute;
   right: 8px; bottom: 8px;
@@ -189,6 +189,28 @@
   border: 1px solid var(--text-muted);
   padding: 3px 6px;
 }
+
+/* Prev/next arrows overlaid on the post cover photo */
+.post-photo-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.post-photo-nav:hover { background: rgba(0, 0, 0, 0.75); color: var(--accent); }
+.post-photo-prev { left: 8px; }
+.post-photo-next { right: 8px; }
 
 .post-state {
   align-self: flex-start;

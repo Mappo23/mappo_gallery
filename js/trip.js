@@ -213,6 +213,19 @@ const Trip = {
     if (!stop) return;
     Object.assign(stop, data);
     Storage.saveTrip(trip);
+
+    // Photos linked to a stop inherit its coordinates by default (unless
+    // already pinned/geotagged elsewhere), so they show up on the map's
+    // photo trail immediately instead of needing a separate manual pin.
+    if (data.photoIds && typeof stop.lat === 'number' && typeof stop.lng === 'number') {
+      data.photoIds.forEach(pid => {
+        const photo = Storage.getPhotos().find(p => p.id === pid);
+        if (photo && !Storage.getCoords(photo)) {
+          Storage.setCoords(pid, { lat: stop.lat, lng: stop.lng });
+        }
+      });
+    }
+
     Trip._sync();
   },
 
@@ -301,24 +314,19 @@ const Trip = {
     const stop  = stops[idx];
     if (!stop) return;
 
-    const photos = Trip.stopPhotos(stop);   // cover = photos[0]
+    const photos = Trip.stopPhotos(stop);
 
     winEl.querySelector('.win-title').textContent = `▒ POST — ${stop.name}`;
     winEl.classList.remove('editing');
 
-    // Card (read view) — first linked photo is the cover; a badge shows the rest.
-    const img   = winEl.querySelector('.post-img');
-    const noimg = winEl.querySelector('.post-noimg');
-    const countEl = winEl.querySelector('.post-photo-count');
-    if (photos.length) {
-      img.src = photos[0].dataUrl; img.hidden = false; noimg.hidden = true;
-    } else {
-      img.removeAttribute('src'); img.hidden = true; noimg.hidden = false;
-    }
-    if (countEl) {
-      countEl.textContent = `+${photos.length - 1}`;
-      countEl.hidden = photos.length < 2;
-    }
+    // Photo browsing state — reset to the first photo only when switching to
+    // a different stop, so re-renders (save, mark reached, etc.) while
+    // browsing don't yank you back to photo #1.
+    if (Trip._postPhotoId !== id) { Trip._postPhotoIdx = 0; Trip._postPhotoId = id; }
+    if (Trip._postPhotoIdx >= photos.length) Trip._postPhotoIdx = 0;
+    Trip._postPhotos = photos;
+    Trip._renderPostPhoto(winEl);
+
     winEl.querySelector('.post-loc').textContent      = stop.name;
     winEl.querySelector('.post-date').textContent     = stop.date || '';
 
@@ -355,6 +363,27 @@ const Trip = {
     Trip._renderPhotoList(winEl);
   },
 
+  // Cover photo browser (read view) — shows Trip._postPhotos[Trip._postPhotoIdx].
+  _renderPostPhoto(winEl) {
+    const photos = Trip._postPhotos || [];
+    const idx    = Trip._postPhotoIdx || 0;
+    const img     = winEl.querySelector('.post-img');
+    const noimg   = winEl.querySelector('.post-noimg');
+    const countEl = winEl.querySelector('.post-photo-count');
+    const prevBtn = winEl.querySelector('.post-photo-prev');
+    const nextBtn = winEl.querySelector('.post-photo-next');
+
+    if (photos.length) {
+      img.src = photos[idx].dataUrl; img.hidden = false; noimg.hidden = true;
+    } else {
+      img.removeAttribute('src'); img.hidden = true; noimg.hidden = false;
+    }
+    countEl.textContent = `${idx + 1}/${photos.length}`;
+    countEl.hidden = photos.length < 2;
+    prevBtn.hidden = photos.length < 2;
+    nextBtn.hidden = photos.length < 2;
+  },
+
   // Removable-chip list of photos linked to the post being edited.
   _renderPhotoList(winEl) {
     const list = winEl.querySelector('.post-photo-list');
@@ -382,6 +411,20 @@ const Trip = {
 
   _bindPost(winEl) {
     winEl.querySelector('.post-edit').addEventListener('click', () => winEl.classList.toggle('editing'));
+
+    // Cycle through this stop's linked photos (hidden when there's only one).
+    winEl.querySelector('.post-photo-prev').addEventListener('click', () => {
+      const n = (Trip._postPhotos || []).length;
+      if (!n) return;
+      Trip._postPhotoIdx = (Trip._postPhotoIdx - 1 + n) % n;
+      Trip._renderPostPhoto(winEl);
+    });
+    winEl.querySelector('.post-photo-next').addEventListener('click', () => {
+      const n = (Trip._postPhotos || []).length;
+      if (!n) return;
+      Trip._postPhotoIdx = (Trip._postPhotoIdx + 1) % n;
+      Trip._renderPostPhoto(winEl);
+    });
 
     // Inline film loader — same entry point as LINKED PHOTO.
     const loadBtn   = winEl.querySelector('.post-load');
@@ -424,6 +467,8 @@ const Trip = {
     if (w) Trip._render(w.el);
     const pw = WindowManager.findByType('post');
     if (pw && Trip.postStopId) Trip._renderPost(pw.el, Trip.postStopId);
-    if (RouteMap.map) RouteMap.drawTrip();
+    // refresh() redraws the photo-pin trail (and the "no pinned photos" hint)
+    // in addition to the itinerary line/stars that drawTrip() alone covers.
+    if (RouteMap.map) RouteMap.refresh();
   },
 };
