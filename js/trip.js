@@ -349,12 +349,35 @@ const Trip = {
     winEl.querySelector('.post-edit-date').value     = stop.date || '';
     winEl.querySelector('.post-edit-thoughts').value = stop.thoughts || '';
 
-    const sel = winEl.querySelector('.post-edit-photo');
+    // Working copy of the linked-photo list for this editing session — lets
+    // [+FILM] / [✕ remove] mutate it freely; only committed on [ SAVE ].
+    Trip._editPhotoIds = [...(stop.photoIds || [])];
+    Trip._renderPhotoList(winEl);
+  },
+
+  // Removable-chip list of photos linked to the post being edited.
+  _renderPhotoList(winEl) {
+    const list = winEl.querySelector('.post-photo-list');
+    const ids  = Trip._editPhotoIds || [];
+    if (!ids.length) {
+      list.innerHTML = '<div class="post-photo-empty">no photos linked yet</div>';
+      return;
+    }
     const allPhotos = Storage.getPhotos();
-    const linked = new Set(stop.photoIds || []);
-    sel.innerHTML = allPhotos
-      .map(p => `<option value="${p.id}" ${linked.has(p.id) ? 'selected' : ''}>${p.filename}</option>`)
-      .join('');
+    list.innerHTML = ids.map(id => {
+      const p = allPhotos.find(x => x.id === id);
+      return `
+        <div class="post-photo-chip">
+          <span class="post-photo-chip-name">${p ? p.filename : id}</span>
+          <button type="button" class="post-photo-remove" data-id="${id}" title="Remove">✕</button>
+        </div>`;
+    }).join('');
+    list.querySelectorAll('.post-photo-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        Trip._editPhotoIds = Trip._editPhotoIds.filter(pid => pid !== btn.dataset.id);
+        Trip._renderPhotoList(winEl);
+      });
+    });
   },
 
   _bindPost(winEl) {
@@ -373,14 +396,8 @@ const Trip = {
       loadBtn.textContent = '[ … ]';
       try {
         const photo = await Upload.loadOne(file);
-        const sel = winEl.querySelector('.post-edit-photo');
-        // Keep whatever was already selected, and add the newly loaded photo.
-        const keep = new Set([...sel.selectedOptions].map(o => o.value));
-        keep.add(photo.id);
-        const allPhotos = Storage.getPhotos();
-        sel.innerHTML = allPhotos
-          .map(p => `<option value="${p.id}" ${keep.has(p.id) ? 'selected' : ''}>${p.filename}</option>`)
-          .join('');
+        if (!Trip._editPhotoIds.includes(photo.id)) Trip._editPhotoIds.push(photo.id);
+        Trip._renderPhotoList(winEl);
       } catch (err) {
         alert(`Could not load film: ${err.message}`);
       } finally {
@@ -391,11 +408,10 @@ const Trip = {
 
     winEl.querySelector('.post-cancel').addEventListener('click', () => { winEl.classList.remove('editing'); Trip._renderPost(winEl, Trip.postStopId); });
     winEl.querySelector('.post-save').addEventListener('click', () => {
-      const sel = winEl.querySelector('.post-edit-photo');
       Trip.savePost(Trip.postStopId, {
         date:      winEl.querySelector('.post-edit-date').value,
         thoughts:  winEl.querySelector('.post-edit-thoughts').value.trim(),
-        photoIds:  [...sel.selectedOptions].map(o => o.value),
+        photoIds:  [...Trip._editPhotoIds],
       });
       winEl.classList.remove('editing');
       Trip._renderPost(winEl, Trip.postStopId);
