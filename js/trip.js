@@ -27,6 +27,18 @@ const TRIP_SEED = {
       plan: '900 km via I-55 through Springfield, then I-44 from St. Louis.',
       lodging: 'Days Inn by Wyndham' },
 
+    { id: 'trip-02b', name: 'Galena, KS',
+      lat: 37.0745, lng: -94.6371, order: 1.3, reached: false,
+      date: '2026-07-04', photoIds: [], thoughts: '',
+      plan: 'A few miles past Joplin — the old Kan-O-Tex station here (4th & Main) inspired Radiator Springs in Pixar\'s Cars.',
+      lodging: '' },
+
+    { id: 'trip-02c', name: 'Clinton, OK — Route 66 Museum',
+      lat: 35.5153, lng: -98.9773, order: 1.6, reached: false,
+      date: '2026-07-04', photoIds: [], thoughts: '',
+      plan: 'Oklahoma Route 66 Museum, right on I-40 — worth the stop for the history of the road you\'re driving.',
+      lodging: '' },
+
     { id: 'trip-03', name: 'Amarillo, TX',
       lat: 35.2220, lng: -101.8313, order: 2, reached: false,
       date: '2026-07-04', photoIds: [], thoughts: '',
