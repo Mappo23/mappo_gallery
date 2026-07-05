@@ -217,11 +217,19 @@ const Trip = {
     // Photos linked to a stop inherit its coordinates by default (unless
     // already pinned/geotagged elsewhere), so they show up on the map's
     // photo trail immediately instead of needing a separate manual pin.
+    // Spread them in a small circle around the stop (rather than stacking
+    // exactly on it) so the photo pins stay visible next to the itinerary
+    // star/live marker instead of hiding underneath it.
     if (data.photoIds && typeof stop.lat === 'number' && typeof stop.lng === 'number') {
-      data.photoIds.forEach(pid => {
+      data.photoIds.forEach((pid, i) => {
         const photo = Storage.getPhotos().find(p => p.id === pid);
         if (photo && !Storage.getCoords(photo)) {
-          Storage.setCoords(pid, { lat: stop.lat, lng: stop.lng });
+          const angle = (i * 53) * (Math.PI / 180);
+          const r = 0.0035;   // ~350m — close by, but visibly distinct on the map
+          Storage.setCoords(pid, {
+            lat: +(stop.lat + Math.sin(angle) * r).toFixed(6),
+            lng: +(stop.lng + Math.cos(angle) * r).toFixed(6),
+          });
         }
       });
     }
