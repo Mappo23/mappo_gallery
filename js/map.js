@@ -250,6 +250,49 @@ const RouteMap = {
     if (c) this.map.flyTo([c.lat, c.lng], Math.max(this.map.getZoom(), 6), { duration: 0.8 });
   },
 
+  // Click-to-place a stop's location — no code edits/redeploys needed to
+  // grow the itinerary. Arms a one-shot map click that sets the stop's
+  // lat/lng, then disarms itself.
+  armPlacement(stopId, label, onPlaced) {
+    if (!this.map) return;
+    if (this._placeHandler) this.map.off('click', this._placeHandler);
+    this._removePlaceHint();
+
+    const win  = WindowManager.findByType('map');
+    const hint = document.createElement('div');
+    hint.className = 'map-place-hint';
+    hint.textContent = `Click the map to place "${label}"`;
+    win?.el.querySelector('.map-body').appendChild(hint);
+    this._placeHint = hint;
+
+    this._placeHandler = (e) => {
+      const trip = Storage.getTrip();
+      const stop = trip.stops.find(s => s.id === stopId);
+      if (stop) {
+        stop.lat = +e.latlng.lat.toFixed(6);
+        stop.lng = +e.latlng.lng.toFixed(6);
+        Storage.saveTrip(trip);
+        // Refresh the trip list + map, but deliberately skip re-rendering an
+        // open post editor here — Trip._sync() would wipe any unsaved edits
+        // sitting in its other fields. The onPlaced callback below handles
+        // updating just the coords readout instead.
+        const tw = WindowManager.findByType('trip');
+        if (tw) Trip._render(tw.el);
+        this.refresh();
+      }
+      this.map.off('click', this._placeHandler);
+      this._placeHandler = null;
+      this._removePlaceHint();
+      if (onPlaced) onPlaced();
+    };
+    this.map.on('click', this._placeHandler);
+  },
+
+  _removePlaceHint() {
+    this._placeHint?.remove();
+    this._placeHint = null;
+  },
+
   _fit() {
     if (!this.map) return;
     const pts = [

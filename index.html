@@ -318,8 +318,23 @@
           <button class="pixel-btn post-reached">[ MARK REACHED ]</button>
         </div>
         <div class="post-editor">
+          <label>STOP NAME
+            <input class="post-edit-name" type="text" maxlength="80" spellcheck="false">
+          </label>
           <label>DATE
             <input class="post-edit-date" type="date">
+          </label>
+          <label>LOCATION
+            <div class="post-photo-row">
+              <span class="post-edit-coords">not placed yet</span>
+              <button type="button" class="pixel-btn post-place-map">[ PLACE ON MAP ]</button>
+            </div>
+          </label>
+          <label>PLAN NOTE <span class="post-photo-hint">(shown until real thoughts are added)</span>
+            <textarea class="post-edit-plan" maxlength="300" spellcheck="false"></textarea>
+          </label>
+          <label>LODGING <span class="post-photo-hint">(optional)</span>
+            <input class="post-edit-lodging" type="text" maxlength="120" spellcheck="false">
           </label>
           <label>LINKED PHOTOS
             <div class="post-photo-list"></div>
@@ -334,6 +349,9 @@
           <div class="post-editor-actions">
             <button class="pixel-btn post-save">[ SAVE ]</button>
             <button class="pixel-btn post-cancel">[ CANCEL ]</button>
+          </div>
+          <div class="post-editor-danger">
+            <button class="pixel-btn post-delete-stop">[ DELETE STOP ]</button>
           </div>
         </div>
       </div>

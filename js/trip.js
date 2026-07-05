@@ -189,6 +189,58 @@ const Trip = {
     Trip._sync();
   },
 
+  // Create a bare stop, positioned wherever the owner picks in this itinerary,
+  // then jump straight into its editor to fill in name/date/location/etc. —
+  // no code changes or redeploys needed to grow the route.
+  addStop() {
+    const trip  = Storage.getTrip();
+    const stops = Trip._sorted(trip);
+    const list  = stops.map((s, i) => `${i + 1}. ${s.name}${s.date ? ' — ' + s.date : ''}`).join('\n')
+                  || '(no stops yet)';
+    const posStr = prompt(
+      `Insert the new stop after which position?\nType a number (0 = very start, ${stops.length} = very end):\n\n${list}`,
+      String(stops.length)
+    );
+    if (posStr === null) return;
+    const afterIdx = parseInt(posStr, 10);
+    if (Number.isNaN(afterIdx) || afterIdx < 0 || afterIdx > stops.length) {
+      alert('Cancelled — that wasn\'t a valid position.');
+      return;
+    }
+
+    let order;
+    if (!stops.length)            order = 0;
+    else if (afterIdx === 0)              order = stops[0].order - 1;
+    else if (afterIdx === stops.length)   order = stops[stops.length - 1].order + 1;
+    else order = (stops[afterIdx - 1].order + stops[afterIdx].order) / 2;
+
+    const id = `trip-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    trip.stops.push({
+      id, name: 'New stop', lat: null, lng: null, order, reached: false,
+      date: '', photoIds: [], thoughts: '', plan: '', lodging: '',
+    });
+    Storage.saveTrip(trip);
+    Trip._sync();
+
+    Trip.openPost(id);
+    WindowManager.findByType('post')?.el.classList.add('editing');
+  },
+
+  deleteStop(id) {
+    const trip = Storage.getTrip();
+    const stop = trip.stops.find(s => s.id === id);
+    if (!stop) return;
+    if (!confirm(`Delete "${stop.name}" from the itinerary? This can't be undone.`)) return;
+
+    trip.stops = trip.stops.filter(s => s.id !== id);
+    if (trip.currentStopId === id) trip.currentStopId = null;
+    Storage.saveTrip(trip);
+
+    const pw = WindowManager.findByType('post');
+    if (pw) WindowManager.close(pw.id);
+    Trip._sync();
+  },
+
   setCurrent(id) {
     const trip = Storage.getTrip();
     trip.status = 'live';
@@ -211,27 +263,28 @@ const Trip = {
     const trip = Storage.getTrip();
     const stop = trip.stops.find(s => s.id === id);
     if (!stop) return;
+    const prevPhotoIds = stop.photoIds || [];
     Object.assign(stop, data);
     Storage.saveTrip(trip);
 
-    // Photos linked to a stop inherit its coordinates by default (unless
-    // already pinned/geotagged elsewhere), so they show up on the map's
-    // photo trail immediately instead of needing a separate manual pin.
-    // Spread them in a small circle around the stop (rather than stacking
-    // exactly on it) so the photo pins stay visible next to the itinerary
-    // star/live marker instead of hiding underneath it.
+    // A photo's map position is decided ENTIRELY by the stop it's linked to —
+    // never EXIF, never a separate manual pin — spread in a small circle so
+    // multiple photos at one stop don't stack exactly on the itinerary star.
+    // This always overwrites, so re-saving keeps every linked photo in sync
+    // even if the stop's own location was just moved.
     if (data.photoIds && typeof stop.lat === 'number' && typeof stop.lng === 'number') {
       data.photoIds.forEach((pid, i) => {
-        const photo = Storage.getPhotos().find(p => p.id === pid);
-        if (photo && !Storage.getCoords(photo)) {
-          const angle = (i * 53) * (Math.PI / 180);
-          const r = 0.0035;   // ~350m — close by, but visibly distinct on the map
-          Storage.setCoords(pid, {
-            lat: +(stop.lat + Math.sin(angle) * r).toFixed(6),
-            lng: +(stop.lng + Math.cos(angle) * r).toFixed(6),
-          });
-        }
+        const angle = (i * 53) * (Math.PI / 180);
+        const r = 0.0035;   // ~350m — close by, but visibly distinct on the map
+        Storage.setCoords(pid, {
+          lat: +(stop.lat + Math.sin(angle) * r).toFixed(6),
+          lng: +(stop.lng + Math.cos(angle) * r).toFixed(6),
+        });
       });
+      // A photo removed from this post no longer belongs anywhere — drop its pin.
+      prevPhotoIds
+        .filter(pid => !data.photoIds.includes(pid))
+        .forEach(pid => Storage.setCoords(pid, null));
     }
 
     Trip._sync();
@@ -254,11 +307,13 @@ const Trip = {
     ctrl.innerHTML =
       (trip.status === 'planning' ? '<button class="pixel-btn trip-start">[ ▶ START TRIP ]</button>' : '') +
       (trip.status === 'live'     ? '<button class="pixel-btn trip-advance">[ ADVANCE ▶ ]</button>'  : '') +
+      '<button class="pixel-btn trip-add-stop">[ + STOP ]</button>' +
       '<button class="pixel-btn trip-reset">[ RESET ]</button>';
 
-    ctrl.querySelector('.trip-start')  ?.addEventListener('click', () => Trip.start());
-    ctrl.querySelector('.trip-advance')?.addEventListener('click', () => Trip.advance());
-    ctrl.querySelector('.trip-reset')  ?.addEventListener('click', () => Trip.reset());
+    ctrl.querySelector('.trip-start')   ?.addEventListener('click', () => Trip.start());
+    ctrl.querySelector('.trip-advance') ?.addEventListener('click', () => Trip.advance());
+    ctrl.querySelector('.trip-add-stop')?.addEventListener('click', () => Trip.addStop());
+    ctrl.querySelector('.trip-reset')   ?.addEventListener('click', () => Trip.reset());
 
     // Stop list
     const list = winEl.querySelector('.trip-list');
@@ -362,8 +417,16 @@ const Trip = {
     winEl.querySelector('.post-current').onclick = () => { Trip.setCurrent(id); Trip._renderPost(winEl, id); };
 
     // Editor fields
+    winEl.querySelector('.post-edit-name').value     = stop.name || '';
     winEl.querySelector('.post-edit-date').value     = stop.date || '';
+    winEl.querySelector('.post-edit-plan').value     = stop.plan || '';
+    winEl.querySelector('.post-edit-lodging').value  = stop.lodging || '';
     winEl.querySelector('.post-edit-thoughts').value = stop.thoughts || '';
+
+    const coordsEl = winEl.querySelector('.post-edit-coords');
+    coordsEl.textContent = (typeof stop.lat === 'number' && typeof stop.lng === 'number')
+      ? `${stop.lat.toFixed(4)}, ${stop.lng.toFixed(4)}`
+      : 'not placed yet';
 
     // Working copy of the linked-photo list for this editing session — lets
     // [+FILM] / [✕ remove] mutate it freely; only committed on [ SAVE ].
@@ -457,10 +520,33 @@ const Trip = {
       }
     });
 
+    // Click-to-place on the Route Map — no code edits needed to locate a stop.
+    // Only the coords readout updates here; a full _renderPost would wipe out
+    // any unsaved edits still sitting in the other fields (name, plan, etc.).
+    winEl.querySelector('.post-place-map').addEventListener('click', () => {
+      const stopId = Trip.postStopId;
+      const name = winEl.querySelector('.post-edit-name').value.trim() || 'this stop';
+      RouteMap.open();
+      RouteMap.armPlacement(stopId, name, () => {
+        if (stopId !== Trip.postStopId) return;   // post switched while placing — ignore
+        const trip = Storage.getTrip();
+        const stop = trip.stops.find(s => s.id === stopId);
+        const coordsEl = winEl.querySelector('.post-edit-coords');
+        coordsEl.textContent = (stop && typeof stop.lat === 'number')
+          ? `${stop.lat.toFixed(4)}, ${stop.lng.toFixed(4)}`
+          : 'not placed yet';
+      });
+    });
+
+    winEl.querySelector('.post-delete-stop').addEventListener('click', () => Trip.deleteStop(Trip.postStopId));
+
     winEl.querySelector('.post-cancel').addEventListener('click', () => { winEl.classList.remove('editing'); Trip._renderPost(winEl, Trip.postStopId); });
     winEl.querySelector('.post-save').addEventListener('click', () => {
       Trip.savePost(Trip.postStopId, {
+        name:      winEl.querySelector('.post-edit-name').value.trim() || 'Untitled stop',
         date:      winEl.querySelector('.post-edit-date').value,
+        plan:      winEl.querySelector('.post-edit-plan').value.trim(),
+        lodging:   winEl.querySelector('.post-edit-lodging').value.trim(),
         thoughts:  winEl.querySelector('.post-edit-thoughts').value.trim(),
         photoIds:  [...Trip._editPhotoIds],
       });

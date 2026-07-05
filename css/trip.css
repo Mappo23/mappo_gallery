@@ -301,6 +301,7 @@
   color: var(--text-muted);
   letter-spacing: 0.06em;
 }
+.post-photo-hint { text-transform: none; letter-spacing: normal; color: var(--placeholder); }
 .post-editor input,
 .post-editor select,
 .post-editor textarea {
@@ -362,8 +363,15 @@
 }
 .post-photo-remove:hover { color: var(--accent); background: var(--s3); }
 
-.post-photo-row { display: flex; gap: 6px; align-items: flex-start; }
-.post-load { flex-shrink: 0; font-size: 6px !important; white-space: nowrap; }
+.post-photo-row { display: flex; gap: 6px; align-items: center; }
+.post-load,
+.post-place-map { flex-shrink: 0; font-size: 6px !important; white-space: nowrap; }
+.post-edit-coords {
+  flex: 1;
+  font-family: var(--font-vt);
+  font-size: 15px;
+  color: var(--text-muted);
+}
 
 /* Pin SAVE / CANCEL as a sticky footer so they're always fully visible,
    regardless of window height or how far the editor has scrolled. */
@@ -379,3 +387,15 @@
   background: var(--s1);
   border-top: 2px solid var(--border-lo);
 }
+
+/* Set apart from SAVE/CANCEL so it's not an easy mis-click */
+.post-editor-danger {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--divider);
+}
+.post-delete-stop {
+  color: var(--text-muted) !important;
+  width: 100%;
+}
+.post-delete-stop:hover { color: #d9503a !important; }

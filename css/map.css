@@ -76,6 +76,24 @@
 }
 body[data-theme="light"] .map-empty span { background: rgba(255,255,255,0.85); }
 
+/* Banner shown while armPlacement() is waiting for a click to place a stop */
+.map-place-hint {
+  position: absolute;
+  top: 10px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid var(--accent);
+  padding: 8px 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+body[data-theme="light"] .map-place-hint { background: rgba(255,255,255,0.92); }
+
 /* ── Picker search + bar ──────────────────────────────────── */
 .picker-search {
   display: flex;
