@@ -78,19 +78,16 @@ const RouteMap = {
   routeLayer:     null,
   tripPlanLayer:  null,
   tripDoneLayer:  null,
-  tripLayer:      null,
   tripStopLayer:  null,
-  photoLayer:     null,
   liveLayer:      null,
   resizeObs:      null,
   showRoute66:    false,  // faint historic '26 alignment — off by default
-  showTripLine:   true,
 
   open() {
     const existing = WindowManager.findByType('map');
     if (existing) {
       existing.minimized ? WindowManager.restore(existing.id) : WindowManager.focus(existing.id);
-      this.refresh();
+      this.drawTrip();
       return;
     }
     const { el, id } = WindowManager.create('map', { width: 820, height: 560, x: 90, y: 60 });
@@ -108,13 +105,11 @@ const RouteMap = {
     this.routeLayer     = L.layerGroup().addTo(this.map);   // historic Route 66
     this.tripPlanLayer  = L.layerGroup().addTo(this.map);   // planned outline route
     this.tripDoneLayer  = L.layerGroup().addTo(this.map);   // solid red reached route
-    this.tripLayer      = L.layerGroup().addTo(this.map);   // chronological photo line
     this.tripStopLayer  = L.layerGroup().addTo(this.map);   // itinerary stop stars
-    this.photoLayer     = L.layerGroup().addTo(this.map);   // photo pins
     this.liveLayer      = L.layerGroup().addTo(this.map);   // pulsing live marker
 
     this._drawRoute66();
-    this.refresh();
+    this.drawTrip();
 
     // Toolbar
     winEl.querySelector('.map-fit').addEventListener('click', () => this._fit());
@@ -123,11 +118,6 @@ const RouteMap = {
       this.showRoute66 = !this.showRoute66;
       e.currentTarget.classList.toggle('toggled-off', !this.showRoute66);
       this._drawRoute66();
-    });
-    winEl.querySelector('.map-toggle-trip').addEventListener('click', e => {
-      this.showTripLine = !this.showTripLine;
-      e.currentTarget.classList.toggle('toggled-off', !this.showTripLine);
-      this.refresh();
     });
 
     this.resizeObs = MapUtil.watchResize(this.map, winEl);
@@ -159,43 +149,10 @@ const RouteMap = {
     });
   },
 
-  refresh() {
-    if (!this.map) return;
-    this.photoLayer.clearLayers();
-    this.tripLayer.clearLayers();
-
-    const located = Storage.getLocatedPhotos();   // [{photo, coords}], chronological
-    this._updateStatus(located.length);
-    this._toggleEmptyHint(located.length === 0);
-
-    // Chronological trip line
-    if (this.showTripLine && located.length > 1) {
-      L.polyline(located.map(x => [x.coords.lat, x.coords.lng]), {
-        color: getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#e87a3e',
-        weight: 2,
-        opacity: 0.7,
-        dashArray: '6,5',
-      }).addTo(this.tripLayer);
-    }
-
-    // Photo markers
-    located.forEach(({ photo, coords }) => {
-      const marker = L.marker([coords.lat, coords.lng], { icon: MapUtil.photoIcon() })
-        .addTo(this.photoLayer);
-      marker.bindTooltip(
-        `<div class="map-tip">` +
-          `<img src="${photo.thumbnail}" alt="">` +
-          `<div class="map-tip-cap">${photo.exif?.date || photo.filename}</div>` +
-        `</div>`,
-        { direction: 'top', className: 'map-tooltip', offset: [0, -8], opacity: 1 }
-      );
-      marker.on('click', () => Gallery.openPhoto(photo.id));
-    });
-
-    this.drawTrip();
-  },
-
   // ── Trip itinerary: planned outline → live red route + stars ──
+  // Every photo belongs to exactly one stop (no independent GPS/EXIF pins),
+  // so the star markers below are the map's only points of interest — click
+  // one (reached ★ or planned ☆) to open that stop's post and its photos.
   drawTrip() {
     if (!this.map) return;
     this.tripPlanLayer.clearLayers();
@@ -295,29 +252,12 @@ const RouteMap = {
 
   _fit() {
     if (!this.map) return;
-    const pts = [
-      ...Storage.getLocatedPhotos().map(x => [x.coords.lat, x.coords.lng]),
-      ...Trip._sorted(Storage.getTrip()).map(s => Trip.stopCoords(s)).filter(Boolean).map(c => [c.lat, c.lng]),
-    ];
+    const pts = Trip._sorted(Storage.getTrip()).map(s => Trip.stopCoords(s)).filter(Boolean).map(c => [c.lat, c.lng]);
     if (pts.length) {
       this.map.fitBounds(L.latLngBounds(pts).pad(0.2));
     } else {
       this.map.fitBounds(L.latLngBounds(ROUTE_66.path).pad(0.1));
     }
-  },
-
-  _updateStatus(n) {
-    const win = WindowManager.findByType('map');
-    if (!win) return;
-    const el = win.el.querySelector('.map-status');
-    if (el) el.textContent = `${n} pinned`;
-  },
-
-  _toggleEmptyHint(show) {
-    const win = WindowManager.findByType('map');
-    if (!win) return;
-    const hint = win.el.querySelector('.map-empty');
-    if (hint) hint.hidden = !show;
   },
 
   applyTheme(theme) {
@@ -326,7 +266,7 @@ const RouteMap = {
     this.tileLayer = MapUtil.makeTiles(theme).addTo(this.map);
     this.tileLayer.bringToBack();
     this._drawRoute66();   // faded line colour follows the theme too
-    this.refresh();        // trip line colour follows the theme accent
+    this.drawTrip();       // planned-route colour follows the theme accent
   },
 };
 
@@ -415,7 +355,7 @@ const LocationPicker = {
     this._setCoordLabel(winEl, null);
     Gallery.updateCoordsDisplay(this.photoId);
     Gallery.refresh();
-    if (RouteMap.map) RouteMap.refresh();
+    if (RouteMap.map) RouteMap.drawTrip();
   },
 
   _save(winEl) {
@@ -424,7 +364,7 @@ const LocationPicker = {
     Storage.setCoords(this.photoId, { lat: +lat.toFixed(6), lng: +lng.toFixed(6) });
     Gallery.updateCoordsDisplay(this.photoId);
     Gallery.refresh();
-    if (RouteMap.map) RouteMap.refresh();
+    if (RouteMap.map) RouteMap.drawTrip();
     this._flash(winEl, '.picker-save', '[ SAVED ✓ ]');
   },
 

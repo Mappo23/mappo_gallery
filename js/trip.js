@@ -561,8 +561,6 @@ const Trip = {
     if (w) Trip._render(w.el);
     const pw = WindowManager.findByType('post');
     if (pw && Trip.postStopId) Trip._renderPost(pw.el, Trip.postStopId);
-    // refresh() redraws the photo-pin trail (and the "no pinned photos" hint)
-    // in addition to the itinerary line/stars that drawTrip() alone covers.
-    if (RouteMap.map) RouteMap.refresh();
+    if (RouteMap.map) RouteMap.drawTrip();
   },
 };
